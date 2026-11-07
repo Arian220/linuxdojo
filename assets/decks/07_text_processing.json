@@ -1,0 +1,218 @@
+{
+  "id": 7,
+  "name": "Text Processing & Editing",
+  "description": "Search, transform, compare, and edit text from the terminal.",
+  "icon": "text_fields",
+  "cards": [
+    {
+      "prompt": "Which command searches text for a pattern?",
+      "answer": "grep",
+      "example": "grep \"error\" app.log",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "What does `grep -i \"error\" app.log` do?",
+      "answer": "Searches case-insensitively for error.",
+      "example": "grep -i \"error\" app.log",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `grep -r \"TODO\" src/` do?",
+      "answer": "Searches recursively for TODO under src/.",
+      "example": "grep -r \"TODO\" src/",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `grep -v \"debug\" app.log` do?",
+      "answer": "Prints lines that do not contain debug.",
+      "example": "grep -v \"debug\" app.log",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `sed 's/old/new/g' file.txt` do?",
+      "answer": "Replaces every occurrence of old with new.",
+      "example": "sed 's/old/new/g' file.txt",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command edits a file in place with sed?",
+      "answer": "sed -i",
+      "example": "sed -i 's/foo/bar/g' file.txt",
+      "type": "multiple_choice",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "What does `awk '{print $1}' file.txt` do?",
+      "answer": "Prints the first whitespace-separated field of each line.",
+      "example": "awk '{print $1}' file.txt",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `awk -F: '{print $1}' /etc/passwd` do?",
+      "answer": "Prints the first colon-separated field from each line.",
+      "example": "awk -F: '{print $1}' /etc/passwd",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command extracts the first colon-separated field?",
+      "answer": "cut -d: -f1",
+      "example": "cut -d: -f1 /etc/passwd",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command sorts lines alphabetically?",
+      "answer": "sort",
+      "example": "sort file.txt",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "Which command sorts and removes duplicate lines?",
+      "answer": "sort -u",
+      "example": "sort -u file.txt",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `uniq -c file.txt` do?",
+      "answer": "Counts adjacent duplicate lines.",
+      "example": "uniq -c file.txt",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `head -n 10 file.txt` do?",
+      "answer": "Prints the first ten lines.",
+      "example": "head -n 10 file.txt",
+      "type": "flip",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "Which command shows the last 20 lines of a file?",
+      "answer": "tail -n 20",
+      "example": "tail -n 20 file.txt",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "What does `wc -w file.txt` do?",
+      "answer": "Counts the words in a file.",
+      "example": "wc -w file.txt",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `tr 'a-z' 'A-Z'` do?",
+      "answer": "Translates lowercase letters to uppercase.",
+      "example": "tr 'a-z' 'A-Z' < file.txt",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command writes stdin to a file and stdout?",
+      "answer": "tee",
+      "example": "echo hello | tee output.txt",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `xargs rm` do?",
+      "answer": "Builds and runs rm commands from standard input.",
+      "example": "find . -name \"*.tmp\" | xargs rm",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command shows differences between two files?",
+      "answer": "diff",
+      "example": "diff a.txt b.txt",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command compares two sorted files line by line?",
+      "answer": "comm",
+      "example": "comm a.txt b.txt",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `paste a.txt b.txt` do?",
+      "answer": "Merges the files side by side.",
+      "example": "paste a.txt b.txt",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `join a.txt b.txt` do?",
+      "answer": "Joins lines that share a common field.",
+      "example": "join a.txt b.txt",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command numbers lines in a file?",
+      "answer": "nl",
+      "example": "nl file.txt",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "What does `column -t file.txt` do?",
+      "answer": "Aligns columns into a readable table.",
+      "example": "column -t file.txt",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command opens the Vim editor?",
+      "answer": "vim",
+      "example": "vim file.txt",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `nano file.txt` do?",
+      "answer": "Opens the Nano text editor.",
+      "example": "nano file.txt",
+      "type": "flip",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "What does `:wq` do in Vim?",
+      "answer": "Saves the file and quits Vim.",
+      "example": ":wq",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `dd if=/dev/zero of=file bs=1M count=10` do?",
+      "answer": "Creates a 10 MB file filled with zero bytes.",
+      "example": "dd if=/dev/zero of=file bs=1M count=10",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "What does `printf \"%s\\n\" hello` do?",
+      "answer": "Prints hello followed by a newline.",
+      "example": "printf \"%s\\n\" hello",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command encodes data in base64?",
+      "answer": "base64",
+      "example": "base64 file.txt",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    }
+  ]
+}

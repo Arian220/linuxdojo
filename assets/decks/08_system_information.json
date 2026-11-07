@@ -1,0 +1,218 @@
+{
+  "id": 8,
+  "name": "System Information",
+  "description": "Inspect hardware, kernel, logs, services, and resource usage.",
+  "icon": "info",
+  "cards": [
+    {
+      "prompt": "Which command prints kernel and system information?",
+      "answer": "uname -a",
+      "example": "uname -a",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "What does `uname -r` do?",
+      "answer": "Prints the kernel release version.",
+      "example": "uname -r",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command shows the hostname and OS information?",
+      "answer": "hostnamectl",
+      "example": "hostnamectl",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "Which command shows distribution details?",
+      "answer": "lsb_release -a",
+      "example": "lsb_release -a",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "What does `cat /etc/os-release` do?",
+      "answer": "Shows operating system release information.",
+      "example": "cat /etc/os-release",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `uptime` do?",
+      "answer": "Shows uptime and load averages.",
+      "example": "uptime",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command shows memory usage in human-readable form?",
+      "answer": "free -h",
+      "example": "free -h",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `df -h` do?",
+      "answer": "Shows filesystem disk space usage.",
+      "example": "df -h",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `du -sh /home` do?",
+      "answer": "Shows the total size of /home.",
+      "example": "du -sh /home",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command shows CPU information?",
+      "answer": "lscpu",
+      "example": "lscpu",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command lists block devices?",
+      "answer": "lsblk",
+      "example": "lsblk",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command lists USB devices?",
+      "answer": "lsusb",
+      "example": "lsusb",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `lspci` do?",
+      "answer": "Lists PCI devices.",
+      "example": "lspci",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `dmidecode -t memory` do?",
+      "answer": "Shows memory hardware details from DMI.",
+      "example": "sudo dmidecode -t memory",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "Which command shows kernel ring buffer messages?",
+      "answer": "dmesg",
+      "example": "sudo dmesg",
+      "type": "multiple_choice",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "What does `dmesg -T` do?",
+      "answer": "Shows kernel messages with human-readable timestamps.",
+      "example": "sudo dmesg -T",
+      "type": "flip",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "What does `journalctl -b` do?",
+      "answer": "Shows logs since the last boot.",
+      "example": "journalctl -b",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command shows journal disk usage?",
+      "answer": "journalctl --disk-usage",
+      "example": "journalctl --disk-usage",
+      "type": "multiple_choice",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "What does `systemctl list-units --type=service` do?",
+      "answer": "Lists loaded service units.",
+      "example": "systemctl list-units --type=service",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `systemctl --failed` do?",
+      "answer": "Lists failed systemd units.",
+      "example": "systemctl --failed",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command reports virtual memory stats every second?",
+      "answer": "vmstat 1",
+      "example": "vmstat 1",
+      "type": "multiple_choice",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "What does `iostat -x 1` do?",
+      "answer": "Shows extended I/O statistics every second.",
+      "example": "iostat -x 1",
+      "type": "flip",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "What does `sar -u 1 5` do?",
+      "answer": "Samples CPU usage five times at one-second intervals.",
+      "example": "sar -u 1 5",
+      "type": "flip",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "Which command prints one batch snapshot of top?",
+      "answer": "top -b -n 1",
+      "example": "top -b -n 1",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `pidof systemd` do?",
+      "answer": "Prints the PID of systemd.",
+      "example": "pidof systemd",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `cat /proc/cpuinfo` do?",
+      "answer": "Shows detailed CPU information.",
+      "example": "cat /proc/cpuinfo",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which file shows detailed memory information?",
+      "answer": "/proc/meminfo",
+      "example": "cat /proc/meminfo",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "What does `stat /` do?",
+      "answer": "Shows filesystem metadata for the root directory.",
+      "example": "stat /",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `mount | column -t` do?",
+      "answer": "Shows mounted filesystems aligned in columns.",
+      "example": "mount | column -t",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `sudo hwinfo --short` do?",
+      "answer": "Prints a short summary of detected hardware.",
+      "example": "sudo hwinfo --short",
+      "type": "flip",
+      "difficulty_tag": "root"
+    }
+  ]
+}

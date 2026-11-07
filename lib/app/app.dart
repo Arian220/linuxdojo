@@ -8,7 +8,7 @@ class LinuxDojoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'LinuxDojo',
+      title: 'Linux Dojo',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.dark,
       darkTheme: AppTheme.dark,

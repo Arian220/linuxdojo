@@ -1,0 +1,218 @@
+{
+  "id": 5,
+  "name": "Networking",
+  "description": "Inspect interfaces, routes, DNS, ports, and remote connections.",
+  "icon": "lan",
+  "cards": [
+    {
+      "prompt": "Which command shows network interfaces and IP addresses?",
+      "answer": "ip addr",
+      "example": "ip addr",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "Which command shows the routing table?",
+      "answer": "ip route",
+      "example": "ip route",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "What does `ping -c 4 example.com` do?",
+      "answer": "Sends four ICMP echo requests to example.com.",
+      "example": "ping -c 4 example.com",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command fetches a URL?",
+      "answer": "curl",
+      "example": "curl https://example.com",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `curl -I https://example.com` do?",
+      "answer": "Fetches only the HTTP response headers.",
+      "example": "curl -I https://example.com",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `wget https://example.com/file.zip` do?",
+      "answer": "Downloads the file to the current directory.",
+      "example": "wget https://example.com/file.zip",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `ss -tulpn` do?",
+      "answer": "Lists listening TCP and UDP ports with process IDs.",
+      "example": "sudo ss -tulpn",
+      "type": "flip",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "Which command lists listening ports with PIDs?",
+      "answer": "netstat -tulpn",
+      "example": "sudo netstat -tulpn",
+      "type": "multiple_choice",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "What does `dig example.com` do?",
+      "answer": "Queries DNS records for example.com.",
+      "example": "dig example.com",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command looks up a domain's DNS records?",
+      "answer": "nslookup",
+      "example": "nslookup example.com",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "Which command resolves a hostname using DNS?",
+      "answer": "host",
+      "example": "host example.com",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `traceroute example.com` do?",
+      "answer": "Traces the network path to example.com.",
+      "example": "traceroute example.com",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command combines ping and traceroute?",
+      "answer": "mtr",
+      "example": "mtr example.com",
+      "type": "multiple_choice",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "What does `ssh ari@server` do?",
+      "answer": "Opens a remote shell on server as ari.",
+      "example": "ssh ari@server",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `ssh-keygen -t ed25519` do?",
+      "answer": "Creates a new Ed25519 SSH key pair.",
+      "example": "ssh-keygen -t ed25519",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `ssh-copy-id ari@server` do?",
+      "answer": "Installs your public key on the remote server.",
+      "example": "ssh-copy-id ari@server",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `scp file.txt ari@server:/tmp/` do?",
+      "answer": "Copies a file to a remote host over SSH.",
+      "example": "scp file.txt ari@server:/tmp/",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command syncs files efficiently over SSH?",
+      "answer": "rsync -av",
+      "example": "rsync -av src/ ari@server:/backup/",
+      "type": "multiple_choice",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "What does `nc -zv host 443` do?",
+      "answer": "Tests whether TCP port 443 is reachable.",
+      "example": "nc -zv example.com 443",
+      "type": "flip",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "What does `telnet host 25` do?",
+      "answer": "Opens a raw TCP connection to port 25.",
+      "example": "telnet mail.example.com 25",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `ip link set eth0 up` do?",
+      "answer": "Enables the eth0 network interface.",
+      "example": "sudo ip link set eth0 up",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "What does `dhclient eth0` do?",
+      "answer": "Requests a DHCP lease for eth0.",
+      "example": "sudo dhclient eth0",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "Which command shows NetworkManager device status?",
+      "answer": "nmcli device status",
+      "example": "nmcli device status",
+      "type": "multiple_choice",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "What does `resolvectl status` do?",
+      "answer": "Shows DNS resolver configuration and status.",
+      "example": "resolvectl status",
+      "type": "flip",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "What does `iptables -L -n -v` do?",
+      "answer": "Lists firewall rules with numeric addresses and counters.",
+      "example": "sudo iptables -L -n -v",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "Which command lists nftables rules?",
+      "answer": "nft list ruleset",
+      "example": "sudo nft list ruleset",
+      "type": "multiple_choice",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "What does `tcpdump -i eth0 port 80` do?",
+      "answer": "Captures HTTP traffic on eth0.",
+      "example": "sudo tcpdump -i eth0 port 80",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "Which command queries domain registration data?",
+      "answer": "whois",
+      "example": "whois example.com",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command shows the ARP or neighbor table?",
+      "answer": "ip neigh",
+      "example": "ip neigh",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `nc -l 9000` do?",
+      "answer": "Listens for a TCP connection on port 9000.",
+      "example": "nc -l 9000",
+      "type": "flip",
+      "difficulty_tag": "user"
+    }
+  ]
+}

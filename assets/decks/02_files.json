@@ -1,0 +1,218 @@
+{
+  "id": 2,
+  "name": "Files",
+  "description": "Create, inspect, move, archive, and remove files and directories.",
+  "icon": "folder",
+  "cards": [
+    {
+      "prompt": "What does `touch notes.txt` do?",
+      "answer": "Creates an empty file or updates its timestamp.",
+      "example": "touch notes.txt",
+      "type": "flip",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "Which command creates a directory?",
+      "answer": "mkdir",
+      "example": "mkdir projects",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "What does `mkdir -p a/b/c` do?",
+      "answer": "Creates nested directories, including missing parents.",
+      "example": "mkdir -p a/b/c",
+      "type": "flip",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "What does `cp file.txt backup.txt` do?",
+      "answer": "Copies file.txt to backup.txt.",
+      "example": "cp file.txt backup.txt",
+      "type": "flip",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "What does `cp -r src/ dest/` do?",
+      "answer": "Copies a directory recursively.",
+      "example": "cp -r src/ dest/",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command renames or moves a file?",
+      "answer": "mv",
+      "example": "mv old.txt new.txt",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "What does `rm notes.txt` do?",
+      "answer": "Deletes the file notes.txt.",
+      "example": "rm notes.txt",
+      "type": "flip",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "What does `rm -rf build/` do?",
+      "answer": "Force deletes the build directory recursively.",
+      "example": "rm -rf build/",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "Which command removes an empty directory?",
+      "answer": "rmdir",
+      "example": "rmdir empty_dir",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "Which command prints a file's contents?",
+      "answer": "cat",
+      "example": "cat file.txt",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "What does `less /var/log/syslog` do?",
+      "answer": "Opens the file in a scrollable pager.",
+      "example": "less /var/log/syslog",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `head -n 5 file.txt` do?",
+      "answer": "Prints the first five lines of the file.",
+      "example": "head -n 5 file.txt",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `tail -f app.log` do?",
+      "answer": "Follows appended lines in a log file.",
+      "example": "tail -f app.log",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command counts the lines in a file?",
+      "answer": "wc -l",
+      "example": "wc -l file.txt",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `find . -name \"*.log\"` do?",
+      "answer": "Finds files by name under the current directory.",
+      "example": "find . -name \"*.log\"",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `find / -type f -size +100M` do?",
+      "answer": "Finds files larger than 100 MB.",
+      "example": "find / -type f -size +100M",
+      "type": "flip",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "Which command searches a prebuilt filename database?",
+      "answer": "locate",
+      "example": "locate nginx.conf",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `ln -s target link` do?",
+      "answer": "Creates a symbolic link named link.",
+      "example": "ln -s /var/log/syslog current.log",
+      "type": "flip",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "Which command prints a symbolic link's target?",
+      "answer": "readlink",
+      "example": "readlink current.log",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command shows detailed file metadata?",
+      "answer": "stat",
+      "example": "stat file.txt",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command identifies a file's type?",
+      "answer": "file",
+      "example": "file image.png",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `du -sh /var/log` do?",
+      "answer": "Shows the total size of a directory in human-readable form.",
+      "example": "du -sh /var/log",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command shows disk space usage in human-readable form?",
+      "answer": "df -h",
+      "example": "df -h",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `mount /dev/sdb1 /mnt/usb` do?",
+      "answer": "Mounts a device at the /mnt/usb directory.",
+      "example": "sudo mount /dev/sdb1 /mnt/usb",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "What does `umount /mnt/usb` do?",
+      "answer": "Unmounts the filesystem at /mnt/usb.",
+      "example": "sudo umount /mnt/usb",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "What does `tar -czf backup.tar.gz dir/` do?",
+      "answer": "Creates a gzip-compressed tar archive.",
+      "example": "tar -czf backup.tar.gz dir/",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command extracts a .tar.gz archive?",
+      "answer": "tar -xzf",
+      "example": "tar -xzf backup.tar.gz",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `zip -r archive.zip dir/` do?",
+      "answer": "Creates a zip archive recursively.",
+      "example": "zip -r archive.zip dir/",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command extracts a zip archive?",
+      "answer": "unzip",
+      "example": "unzip archive.zip",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `chattr +i file.txt` do?",
+      "answer": "Makes the file immutable until the attribute is removed.",
+      "example": "sudo chattr +i file.txt",
+      "type": "flip",
+      "difficulty_tag": "root"
+    }
+  ]
+}

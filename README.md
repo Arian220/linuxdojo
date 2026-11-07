@@ -13,7 +13,8 @@ accounts, no network calls, no tracking.
 
 ## Status
 
-Early development. Module 0 (project setup) is complete. Study sessions, content,
+Early development. Modules 0–1 are complete: project setup, theme, app shell,
+drift schema, seeded deck content, and repositories. Study sessions,
 gamification, and smart notifications are next.
 
 ## Planned MVP
@@ -54,7 +55,12 @@ flutter analyze
 flutter test
 ```
 
-The same commands run in GitHub Actions on every push and pull request.
+The same commands run in GitHub Actions on every push and pull request. After
+changing drift tables, regenerate the database code:
+
+```bash
+dart run build_runner build
+```
 
 ## Building the Android APK
 
@@ -71,13 +77,16 @@ as an APK; there is no Play Store release for the MVP.
 lib/
 ├── app/                     # App root and MaterialApp configuration
 ├── core/
+│   ├── database/            # Drift schema, seed loader, database providers
+│   ├── models/              # Card type and difficulty enums
 │   ├── theme/               # Dark Material 3 theme, colors, typography
 │   └── widgets/             # Shared UI building blocks
 └── features/
     ├── home/                # Home / daily study entry point
-    ├── decks/               # Deck browsing
-    ├── stats/               # Weekly stats and achievements
-    ├── settings/            # Preferences, reminders, about
+    ├── decks/               # Deck browsing + deck repository
+    ├── study/               # Due-card and session repositories
+    ├── stats/               # Weekly stats, achievements repository
+    ├── settings/            # Preferences, reminders, settings repository
     └── shell/               # Bottom navigation shell
 ```
 

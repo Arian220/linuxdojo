@@ -1,0 +1,218 @@
+{
+  "id": 1,
+  "name": "Basics",
+  "description": "Essential terminal commands and shell shortcuts for everyday use.",
+  "icon": "terminal",
+  "cards": [
+    {
+      "prompt": "What does `pwd` do?",
+      "answer": "Prints the current working directory.",
+      "example": "pwd\n/home/ari",
+      "type": "flip",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "Which command lists the contents of a directory?",
+      "answer": "ls",
+      "example": "ls -la",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "What does `cd /var/log` do?",
+      "answer": "Changes the current directory to /var/log.",
+      "example": "cd /var/log\npwd\n/var/log",
+      "type": "flip",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "What does `cd ..` do?",
+      "answer": "Moves up one directory level.",
+      "example": "cd /home/ari/projects\ncd ..\npwd\n/home/ari",
+      "type": "flip",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "Which command prints the current username?",
+      "answer": "whoami",
+      "example": "whoami",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "What does `date` do?",
+      "answer": "Displays the current date and time.",
+      "example": "date",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command clears the terminal screen?",
+      "answer": "clear",
+      "example": "clear",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "What does `history` do?",
+      "answer": "Shows previously executed commands.",
+      "example": "history | tail -5",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `man ls` do?",
+      "answer": "Opens the manual page for the ls command.",
+      "example": "man ls",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `echo \"hello\"` do?",
+      "answer": "Prints the given text to standard output.",
+      "example": "echo \"hello\"\nhello",
+      "type": "flip",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "Which command closes the current shell session?",
+      "answer": "exit",
+      "example": "exit",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "What does `sudo apt update` do?",
+      "answer": "Refreshes the package index using superuser privileges.",
+      "example": "sudo apt update",
+      "type": "flip",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "What does `sudo apt upgrade` do?",
+      "answer": "Installs available package updates.",
+      "example": "sudo apt upgrade -y",
+      "type": "flip",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "What does `sudo shutdown now` do?",
+      "answer": "Powers off the system immediately.",
+      "example": "sudo shutdown now",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "Which command restarts the system?",
+      "answer": "reboot",
+      "example": "sudo reboot",
+      "type": "multiple_choice",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "Which option displays help information for a command?",
+      "answer": "--help",
+      "example": "ls --help",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "Which key completes commands and paths in the shell?",
+      "answer": "Tab",
+      "example": "cd /us<Tab>",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "Which shortcut interrupts the running command?",
+      "answer": "Ctrl+C",
+      "example": "sleep 60\nCtrl+C",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "What does `Ctrl+D` do at an empty prompt?",
+      "answer": "Sends end-of-file and exits the shell.",
+      "example": "Ctrl+D",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which shortcut clears the terminal screen?",
+      "answer": "Ctrl+L",
+      "example": "Ctrl+L",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "What does `!!` do in the shell?",
+      "answer": "Repeats the previous command.",
+      "example": "sudo !!",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `!$` do in the shell?",
+      "answer": "Refers to the last argument of the previous command.",
+      "example": "mkdir demo\ncd !$",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `alias ll='ls -la'` do?",
+      "answer": "Creates a shortcut named ll for ls -la.",
+      "example": "alias ll='ls -la'\nll",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `unalias ll` do?",
+      "answer": "Removes the ll alias.",
+      "example": "unalias ll",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `type ls` do?",
+      "answer": "Shows how the shell resolves the ls command.",
+      "example": "type ls\nls is /usr/bin/ls",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command shows the executable path for python3?",
+      "answer": "which python3",
+      "example": "which python3",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command prints environment variables?",
+      "answer": "env",
+      "example": "env | grep HOME",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `export EDITOR=vim` do?",
+      "answer": "Sets the EDITOR environment variable for the current shell.",
+      "example": "export EDITOR=vim",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `sudo su -` do?",
+      "answer": "Starts a login shell as the root user.",
+      "example": "sudo su -",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "Which command changes your password?",
+      "answer": "passwd",
+      "example": "passwd",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    }
+  ]
+}

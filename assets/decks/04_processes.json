@@ -1,0 +1,218 @@
+{
+  "id": 4,
+  "name": "Processes",
+  "description": "Inspect, control, schedule, and troubleshoot running processes.",
+  "icon": "memory",
+  "cards": [
+    {
+      "prompt": "Which command lists all running processes?",
+      "answer": "ps aux",
+      "example": "ps aux",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `top` do?",
+      "answer": "Shows a live view of running processes and resource usage.",
+      "example": "top",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command opens an interactive process viewer?",
+      "answer": "htop",
+      "example": "htop",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `kill 1234` do?",
+      "answer": "Sends SIGTERM to process ID 1234.",
+      "example": "kill 1234",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `kill -9 1234` do?",
+      "answer": "Force kills process ID 1234 with SIGKILL.",
+      "example": "kill -9 1234",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "Which command kills processes by name?",
+      "answer": "pkill",
+      "example": "pkill nginx",
+      "type": "multiple_choice",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "What does `killall firefox` do?",
+      "answer": "Kills all processes named firefox.",
+      "example": "killall firefox",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `pgrep -f \"python app.py\"` do?",
+      "answer": "Finds PIDs whose full command line matches the pattern.",
+      "example": "pgrep -f \"python app.py\"",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command prints the PID of a running program?",
+      "answer": "pidof",
+      "example": "pidof sshd",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "Which command lists background jobs in the current shell?",
+      "answer": "jobs",
+      "example": "jobs",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command resumes a stopped job in the background?",
+      "answer": "bg",
+      "example": "bg %1",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command brings a background job to the foreground?",
+      "answer": "fg",
+      "example": "fg %1",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `command &` do?",
+      "answer": "Runs the command in the background.",
+      "example": "sleep 60 &",
+      "type": "flip",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "What does `nohup ./server &` do?",
+      "answer": "Keeps the server running after the shell exits.",
+      "example": "nohup ./server &",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `nice -n 10 ./backup.sh` do?",
+      "answer": "Starts the script with lower CPU priority.",
+      "example": "nice -n 10 ./backup.sh",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command changes a running process's priority?",
+      "answer": "renice",
+      "example": "sudo renice -n 5 -p 1234",
+      "type": "multiple_choice",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "What does `systemctl status nginx` do?",
+      "answer": "Shows the current status of the nginx service.",
+      "example": "systemctl status nginx",
+      "type": "flip",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "Which command starts a systemd service?",
+      "answer": "systemctl start",
+      "example": "sudo systemctl start nginx",
+      "type": "multiple_choice",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "What does `systemctl enable nginx` do?",
+      "answer": "Enables nginx to start automatically at boot.",
+      "example": "sudo systemctl enable nginx",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "What does `systemctl restart nginx` do?",
+      "answer": "Stops and starts the nginx service again.",
+      "example": "sudo systemctl restart nginx",
+      "type": "flip",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "What does `journalctl -u nginx` do?",
+      "answer": "Shows journal logs for the nginx service.",
+      "example": "journalctl -u nginx",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command follows the system journal live?",
+      "answer": "journalctl -f",
+      "example": "journalctl -f",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command shows the process tree with PIDs?",
+      "answer": "pstree -p",
+      "example": "pstree -p",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "What does `lsof -i :8080` do?",
+      "answer": "Shows which process is using port 8080.",
+      "example": "sudo lsof -i :8080",
+      "type": "flip",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "What does `strace -p 1234` do?",
+      "answer": "Traces the system calls of process ID 1234.",
+      "example": "sudo strace -p 1234",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "Which command edits your cron jobs?",
+      "answer": "crontab -e",
+      "example": "crontab -e",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `crontab -l` do?",
+      "answer": "Lists your scheduled cron jobs.",
+      "example": "crontab -l",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `at now + 1 hour` do?",
+      "answer": "Schedules a one-time job to run in one hour.",
+      "example": "at now + 1 hour",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `watch -n 2 df -h` do?",
+      "answer": "Runs df -h every two seconds.",
+      "example": "watch -n 2 df -h",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `timeout 30 ./script.sh` do?",
+      "answer": "Stops the script after 30 seconds.",
+      "example": "timeout 30 ./script.sh",
+      "type": "flip",
+      "difficulty_tag": "user"
+    }
+  ]
+}

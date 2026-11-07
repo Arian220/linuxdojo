@@ -1,0 +1,218 @@
+{
+  "id": 3,
+  "name": "Permissions",
+  "description": "Ownership, modes, ACLs, and privilege escalation.",
+  "icon": "lock",
+  "cards": [
+    {
+      "prompt": "Which command lists files with their permissions?",
+      "answer": "ls -l",
+      "example": "ls -l",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "What does `chmod 755 script.sh` do?",
+      "answer": "Sets permissions to rwxr-xr-x on script.sh.",
+      "example": "chmod 755 script.sh",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `chmod +x script.sh` do?",
+      "answer": "Adds execute permission to script.sh.",
+      "example": "chmod +x script.sh\n./script.sh",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `chmod -R 644 dir/` do?",
+      "answer": "Sets files under dir/ to rw-r--r-- recursively.",
+      "example": "chmod -R 644 dir/",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `chown ari file.txt` do?",
+      "answer": "Changes the owner of file.txt to ari.",
+      "example": "sudo chown ari file.txt",
+      "type": "flip",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "Which command changes both the owner and group?",
+      "answer": "chown ari:dev",
+      "example": "sudo chown ari:dev file.txt",
+      "type": "multiple_choice",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "What does `chgrp dev file.txt` do?",
+      "answer": "Changes the group of file.txt to dev.",
+      "example": "sudo chgrp dev file.txt",
+      "type": "flip",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "What does `umask 022` do?",
+      "answer": "Sets the default permission mask for new files.",
+      "example": "umask 022",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command shows your user and group IDs?",
+      "answer": "id",
+      "example": "id",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "Which command lists the groups you belong to?",
+      "answer": "groups",
+      "example": "groups",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command lists your allowed sudo commands?",
+      "answer": "sudo -l",
+      "example": "sudo -l",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `sudo -u postgres psql` do?",
+      "answer": "Runs psql as the postgres user.",
+      "example": "sudo -u postgres psql",
+      "type": "flip",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "What does `su - deploy` do?",
+      "answer": "Starts a login shell as the deploy user.",
+      "example": "su - deploy",
+      "type": "flip",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "Which command changes your password?",
+      "answer": "passwd",
+      "example": "passwd",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `passwd deploy` do?",
+      "answer": "Changes the password for the deploy user.",
+      "example": "sudo passwd deploy",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "Which command safely edits the sudoers file?",
+      "answer": "visudo",
+      "example": "sudo visudo",
+      "type": "multiple_choice",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "What does `useradd -m alice` do?",
+      "answer": "Creates a user named alice with a home directory.",
+      "example": "sudo useradd -m alice",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "What does `userdel -r alice` do?",
+      "answer": "Deletes the user alice and their home directory.",
+      "example": "sudo userdel -r alice",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "What does `usermod -aG sudo alice` do?",
+      "answer": "Adds alice to the sudo group without removing other groups.",
+      "example": "sudo usermod -aG sudo alice",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "Which command creates a group?",
+      "answer": "groupadd",
+      "example": "sudo groupadd devs",
+      "type": "multiple_choice",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "What does `groupdel devs` do?",
+      "answer": "Deletes the group devs.",
+      "example": "sudo groupdel devs",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "Which command shows a file's ACL entries?",
+      "answer": "getfacl",
+      "example": "getfacl file.txt",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `setfacl -m u:alice:rw file.txt` do?",
+      "answer": "Grants alice read and write access through an ACL.",
+      "example": "setfacl -m u:alice:rw file.txt",
+      "type": "flip",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "Which command shows file attributes such as immutable?",
+      "answer": "lsattr",
+      "example": "lsattr file.txt",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `chmod u+s script.sh` do?",
+      "answer": "Sets the setuid bit on script.sh.",
+      "example": "sudo chmod u+s script.sh",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "What does `chmod g+s dir/` do?",
+      "answer": "Sets the setgid bit so new files inherit the directory group.",
+      "example": "sudo chmod g+s dir/",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "What does `chmod +t /tmp/shared` do?",
+      "answer": "Sets the sticky bit so only owners can delete their files.",
+      "example": "sudo chmod +t /tmp/shared",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "What does `find / -perm -4000 -type f` do?",
+      "answer": "Finds files with the setuid bit enabled.",
+      "example": "sudo find / -perm -4000 -type f",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "Which directory holds drop-in sudoers rules?",
+      "answer": "/etc/sudoers.d",
+      "example": "ls /etc/sudoers.d",
+      "type": "multiple_choice",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "Which command restricts a private key to owner read/write?",
+      "answer": "chmod 600",
+      "example": "chmod 600 ~/.ssh/id_rsa",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    }
+  ]
+}

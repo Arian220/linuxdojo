@@ -1,0 +1,218 @@
+{
+  "id": 6,
+  "name": "User & Group Management",
+  "description": "Manage accounts, groups, passwords, and sudo access.",
+  "icon": "group",
+  "cards": [
+    {
+      "prompt": "Which command prints your username?",
+      "answer": "whoami",
+      "example": "whoami",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "What does `id` do?",
+      "answer": "Shows your UID, GID, and group memberships.",
+      "example": "id",
+      "type": "flip",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "Which command lists logged-in users?",
+      "answer": "who",
+      "example": "who",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "Which command shows logged-in users and their activity?",
+      "answer": "w",
+      "example": "w",
+      "type": "multiple_choice",
+      "difficulty_tag": "novice"
+    },
+    {
+      "prompt": "What does `last` do?",
+      "answer": "Shows the login history.",
+      "example": "last",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command shows the last login for each user?",
+      "answer": "lastlog",
+      "example": "lastlog",
+      "type": "multiple_choice",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "What does `useradd -m -s /bin/bash alice` do?",
+      "answer": "Creates alice with a home directory and Bash shell.",
+      "example": "sudo useradd -m -s /bin/bash alice",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "Which friendly command creates a user interactively?",
+      "answer": "adduser",
+      "example": "sudo adduser alice",
+      "type": "multiple_choice",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "What does `userdel -r alice` do?",
+      "answer": "Removes alice and her home directory.",
+      "example": "sudo userdel -r alice",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "What does `usermod -aG sudo alice` do?",
+      "answer": "Adds alice to the sudo group.",
+      "example": "sudo usermod -aG sudo alice",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "What does `usermod -L alice` do?",
+      "answer": "Locks alice's account.",
+      "example": "sudo usermod -L alice",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "Which command unlocks a user account?",
+      "answer": "usermod -U",
+      "example": "sudo usermod -U alice",
+      "type": "multiple_choice",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "What does `passwd alice` do?",
+      "answer": "Sets a new password for alice.",
+      "example": "sudo passwd alice",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "What does `chage -l alice` do?",
+      "answer": "Shows alice's password aging information.",
+      "example": "sudo chage -l alice",
+      "type": "flip",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "Which command creates a group?",
+      "answer": "groupadd",
+      "example": "sudo groupadd devs",
+      "type": "multiple_choice",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "What does `groupdel devs` do?",
+      "answer": "Deletes the devs group.",
+      "example": "sudo groupdel devs",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "What does `gpasswd -a alice devs` do?",
+      "answer": "Adds alice to the devs group.",
+      "example": "sudo gpasswd -a alice devs",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "Which command removes a user from a group?",
+      "answer": "gpasswd -d",
+      "example": "sudo gpasswd -d alice devs",
+      "type": "multiple_choice",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "What does `groups alice` do?",
+      "answer": "Lists the groups alice belongs to.",
+      "example": "groups alice",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `getent passwd alice` do?",
+      "answer": "Reads alice's passwd entry through NSS.",
+      "example": "getent passwd alice",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which command reads a group entry from NSS?",
+      "answer": "getent group",
+      "example": "getent group devs",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `finger alice` do?",
+      "answer": "Shows account information for alice when finger is installed.",
+      "example": "finger alice",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `sudo -u alice whoami` do?",
+      "answer": "Runs whoami as alice.",
+      "example": "sudo -u alice whoami",
+      "type": "flip",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "Which command starts a login shell as alice?",
+      "answer": "su - alice",
+      "example": "su - alice",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `sudo -i` do?",
+      "answer": "Opens an interactive root login shell.",
+      "example": "sudo -i",
+      "type": "flip",
+      "difficulty_tag": "admin"
+    },
+    {
+      "prompt": "What does `visudo` do?",
+      "answer": "Safely edits the sudoers file with syntax checking.",
+      "example": "sudo visudo",
+      "type": "flip",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "Which command lists your sudo privileges?",
+      "answer": "sudo -l",
+      "example": "sudo -l",
+      "type": "multiple_choice",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "What does `/etc/passwd` contain?",
+      "answer": "User account entries with UID, GID, home, and shell.",
+      "example": "cat /etc/passwd",
+      "type": "flip",
+      "difficulty_tag": "user"
+    },
+    {
+      "prompt": "Which file stores hashed passwords?",
+      "answer": "/etc/shadow",
+      "example": "sudo cat /etc/shadow",
+      "type": "multiple_choice",
+      "difficulty_tag": "root"
+    },
+    {
+      "prompt": "What does `/etc/group` contain?",
+      "answer": "Group definitions and their member lists.",
+      "example": "cat /etc/group",
+      "type": "flip",
+      "difficulty_tag": "user"
+    }
+  ]
+}
