@@ -39,4 +39,26 @@ void main() {
       'daily_goal': '10',
     });
   });
+
+  test('reads the daily goal with a safe fallback', () async {
+    expect(
+      await repository.getDailyGoal(),
+      SettingsRepository.defaultDailyGoal,
+    );
+
+    await repository.set(SettingsRepository.dailyGoalKey, '20');
+    expect(await repository.getDailyGoal(), 20);
+
+    await repository.set(SettingsRepository.dailyGoalKey, 'not-a-number');
+    expect(
+      await repository.getDailyGoal(),
+      SettingsRepository.defaultDailyGoal,
+    );
+
+    await repository.set(SettingsRepository.dailyGoalKey, '0');
+    expect(
+      await repository.getDailyGoal(),
+      SettingsRepository.defaultDailyGoal,
+    );
+  });
 }

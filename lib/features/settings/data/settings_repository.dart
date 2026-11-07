@@ -5,7 +5,16 @@ import 'package:linuxdojo/core/database/database_provider.dart';
 class SettingsRepository {
   const SettingsRepository(this._database);
 
+  static const dailyGoalKey = 'daily_goal';
+  static const defaultDailyGoal = 10;
+
   final AppDatabase _database;
+
+  Future<int> getDailyGoal() async {
+    final raw = await get(dailyGoalKey);
+    final parsed = int.tryParse(raw ?? '');
+    return parsed != null && parsed > 0 ? parsed : defaultDailyGoal;
+  }
 
   Future<String?> get(String key) async {
     final query = _database.select(_database.settings)

@@ -13,9 +13,11 @@ accounts, no network calls, no tracking.
 
 ## Status
 
-Early development. Modules 0–1 are complete: project setup, theme, app shell,
-drift schema, seeded deck content, and repositories. Study sessions,
-gamification, and smart notifications are next.
+Early development. Modules 0–3 are complete: project setup, theme, app shell,
+drift schema, seeded deck content, repositories, the SM-2 scheduling engine,
+and flip-only study sessions with animated cards, four grade buttons, and a
+session summary. Multiple choice, gamification, and smart notifications are
+next.
 
 ## Planned MVP
 
@@ -27,6 +29,13 @@ gamification, and smart notifications are next.
 - Smart daily reminders based on usage patterns.
 - 100% offline with local SQLite progress.
 - Dark-only, terminal-inspired Material 3 interface.
+
+## Spaced repetition
+
+Grades are mapped to SM-2 quality values: Again = 0, Hard = 3, Good = 4,
+Easy = 5. The engine updates the ease factor, repetition count, interval, and
+next review date. Multiple choice answers auto-grade as Good when correct and
+Again when wrong. The ease factor never drops below 1.3.
 
 ## Tech stack
 
@@ -84,7 +93,7 @@ lib/
 └── features/
     ├── home/                # Home / daily study entry point
     ├── decks/               # Deck browsing + deck repository
-    ├── study/               # Due-card and session repositories
+    ├── study/               # Due cards, sessions, reviews, and SM-2 domain
     ├── stats/               # Weekly stats, achievements repository
     ├── settings/            # Preferences, reminders, settings repository
     └── shell/               # Bottom navigation shell
