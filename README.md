@@ -13,11 +13,12 @@ accounts, no network calls, no tracking.
 
 ## Status
 
-Early development. Modules 0–3 are complete: project setup, theme, app shell,
+Early development. Modules 0–5 are complete: project setup, theme, app shell,
 drift schema, seeded deck content, repositories, the SM-2 scheduling engine,
-and flip-only study sessions with animated cards, four grade buttons, and a
-session summary. Multiple choice, gamification, and smart notifications are
-next.
+flip study sessions with animated cards and four grade buttons, multiple choice
+questions with same-deck distractors, immediate feedback, usage examples, and
+auto-grading, plus deck browsing with mastery progress and read-only card
+details. Gamification and smart notifications are next.
 
 ## Planned MVP
 

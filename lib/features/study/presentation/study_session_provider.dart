@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linuxdojo/core/database/app_database.dart';
 import 'package:linuxdojo/core/models/card_type.dart';
@@ -5,23 +7,21 @@ import 'package:linuxdojo/features/settings/data/settings_repository.dart';
 import 'package:linuxdojo/features/study/data/review_repository.dart';
 import 'package:linuxdojo/features/study/data/session_repository.dart';
 import 'package:linuxdojo/features/study/data/study_repository.dart';
+import 'package:linuxdojo/features/study/domain/distractor_generator.dart';
 import 'package:linuxdojo/features/study/domain/review_grade.dart';
+import 'package:linuxdojo/features/study/domain/study_card.dart';
 import 'package:linuxdojo/features/study/presentation/study_session_state.dart';
 
 final clockProvider = Provider<DateTime Function()>((ref) => DateTime.now);
 
+final distractorGeneratorProvider = Provider<DistractorGenerator>(
+  (ref) => const DistractorGenerator(),
+);
+
+final sessionRandomProvider = Provider<Random>((ref) => Random());
+
 final dueCardsProvider = StreamProvider<List<CardEntry>>((ref) {
   return ref.watch(studyRepositoryProvider).watchDueCards();
-});
-
-final dueFlipCardsProvider = Provider<AsyncValue<List<CardEntry>>>((ref) {
-  return ref
-      .watch(dueCardsProvider)
-      .whenData(
-        (cards) => cards
-            .where((card) => card.type == CardType.flip)
-            .toList(growable: false),
-      );
 });
 
 final studySessionProvider =
@@ -32,9 +32,33 @@ final studySessionProvider =
 class StudySessionNotifier extends AsyncNotifier<StudySessionState> {
   @override
   Future<StudySessionState> build() async {
-    final dueCards = await ref.watch(studyRepositoryProvider).getDueCards();
-    final cards = dueCards.where((card) => card.type == CardType.flip).toList()
-      ..sort((a, b) => a.id.compareTo(b.id));
+    final repository = ref.watch(studyRepositoryProvider);
+    final dueCards = await repository.getDueCards();
+    final sorted = dueCards.toList()..sort((a, b) => a.id.compareTo(b.id));
+
+    final generator = ref.read(distractorGeneratorProvider);
+    final random = ref.read(sessionRandomProvider);
+    final deckCards = <int, List<CardEntry>>{};
+    final cards = <StudyCard>[];
+
+    for (final card in sorted) {
+      if (card.type == CardType.multipleChoice) {
+        final pool = deckCards[card.deckId] ??= await repository
+            .getCardsForDeck(card.deckId);
+        cards.add(
+          StudyCard(
+            card: card,
+            options: generator.buildOptions(
+              card: card,
+              deckCards: pool,
+              random: random,
+            ),
+          ),
+        );
+      } else {
+        cards.add(StudyCard(card: card));
+      }
+    }
 
     return StudySessionState(
       cards: cards,
@@ -53,11 +77,45 @@ class StudySessionNotifier extends AsyncNotifier<StudySessionState> {
         !current.hasCards ||
         current.isComplete ||
         current.isRevealed ||
-        current.isGrading) {
+        current.isGrading ||
+        current.isMultipleChoice) {
       return;
     }
 
     state = AsyncData(current.copyWith(isRevealed: true));
+  }
+
+  void selectOption(String option) {
+    final current = state.value;
+    if (current == null ||
+        !current.hasCards ||
+        current.isComplete ||
+        current.isGrading ||
+        !current.isMultipleChoice ||
+        current.isAnswered) {
+      return;
+    }
+
+    final card = current.currentCard;
+    if (card == null || !card.options.contains(option)) return;
+
+    state = AsyncData(current.copyWith(selectedOption: option));
+  }
+
+  Future<void> continueAfterMultipleChoice() async {
+    final current = state.value;
+    if (current == null ||
+        !current.hasCards ||
+        current.isComplete ||
+        current.isGrading ||
+        !current.isMultipleChoice ||
+        !current.isAnswered) {
+      return;
+    }
+
+    await _applyGrade(
+      ReviewGrade.fromMultipleChoice(correct: current.isCorrect),
+    );
   }
 
   Future<void> grade(ReviewGrade grade) async {
@@ -66,12 +124,20 @@ class StudySessionNotifier extends AsyncNotifier<StudySessionState> {
         !current.hasCards ||
         current.isComplete ||
         !current.isRevealed ||
-        current.isGrading) {
+        current.isGrading ||
+        current.isMultipleChoice) {
       return;
     }
 
-    final card = current.currentCard;
-    if (card == null) return;
+    await _applyGrade(grade);
+  }
+
+  Future<void> _applyGrade(ReviewGrade grade) async {
+    final current = state.value;
+    if (current == null) return;
+
+    final studyCard = current.currentCard;
+    if (studyCard == null) return;
 
     state = AsyncData(current.copyWith(isGrading: true));
 
@@ -79,7 +145,11 @@ class StudySessionNotifier extends AsyncNotifier<StudySessionState> {
       final reviewedAt = _now();
       await ref
           .read(reviewRepositoryProvider)
-          .applyGrade(cardId: card.id, grade: grade, reviewedAt: reviewedAt);
+          .applyGrade(
+            cardId: studyCard.card.id,
+            grade: grade,
+            reviewedAt: reviewedAt,
+          );
       if (!ref.mounted) return;
 
       final reviewedCount = current.reviewedCount + 1;
@@ -132,6 +202,7 @@ class StudySessionNotifier extends AsyncNotifier<StudySessionState> {
         current.copyWith(
           currentIndex: nextIndex,
           isRevealed: false,
+          clearSelection: true,
           reviewedCount: reviewedCount,
           correctCount: correctCount,
           isGrading: false,

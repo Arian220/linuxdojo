@@ -26,8 +26,8 @@ void main() {
   test('all seeded cards are due initially', () async {
     final cards = await repository.getDueCards();
 
-    expect(cards, hasLength(3));
-    expect(await repository.countDueCards(), 3);
+    expect(cards, hasLength(8));
+    expect(await repository.countDueCards(), 8);
   });
 
   test('excludes cards scheduled in the future', () async {
@@ -40,9 +40,9 @@ void main() {
 
     final cards = await repository.getDueCards();
 
-    expect(cards, hasLength(2));
+    expect(cards, hasLength(7));
     expect(cards.map((card) => card.id), isNot(contains(1)));
-    expect(await repository.countDueCards(), 2);
+    expect(await repository.countDueCards(), 7);
   });
 
   test('returns the review state for a card', () async {

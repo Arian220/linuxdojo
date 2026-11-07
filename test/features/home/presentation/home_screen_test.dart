@@ -24,9 +24,7 @@ void main() {
     await database.close();
   });
 
-  testWidgets('shows due flip cards and starts a study session', (
-    tester,
-  ) async {
+  testWidgets('shows due cards and starts a study session', (tester) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [appDatabaseProvider.overrideWithValue(database)],
@@ -35,8 +33,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('2'), findsOneWidget);
-    expect(find.text('flip cards due'), findsOneWidget);
+    expect(find.text('8'), findsOneWidget);
+    expect(find.text('cards due'), findsOneWidget);
 
     await tester.tap(find.widgetWithText(FilledButton, 'Study'));
     await tester.pumpAndSettle();

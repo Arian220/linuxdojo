@@ -39,10 +39,38 @@ void main() {
   test('returns cards for a deck in id order', () async {
     final cards = await repository.getCardsForDeck(1);
 
-    expect(cards, hasLength(2));
+    expect(cards, hasLength(7));
     expect(cards.first.prompt, contains('pwd'));
-    expect(await repository.countCardsForDeck(1), 2);
+    expect(await repository.countCardsForDeck(1), 7);
     expect(await repository.countCardsForDeck(2), 1);
+  });
+
+  test('summarizes total and mastered cards per deck', () async {
+    final summaries = await repository.watchDeckSummaries().first;
+
+    expect(summaries, hasLength(2));
+    expect(summaries[0].deck.name, 'Basics');
+    expect(summaries[0].totalCards, 7);
+    expect(summaries[0].masteredCards, 0);
+    expect(summaries[0].progress, 0);
+    expect(summaries[1].deck.name, 'Permissions');
+    expect(summaries[1].totalCards, 1);
+
+    await database
+        .into(database.reviews)
+        .insertOnConflictUpdate(
+          ReviewsCompanion(
+            cardId: const Value(1),
+            repetitions: const Value(DeckRepository.masteredRepetitions),
+            nextReview: Value(DateTime.now()),
+          ),
+        );
+
+    final updated = await repository.watchDeckSummary(1).first;
+    expect(updated, isNotNull);
+    expect(updated!.masteredCards, 1);
+    expect(updated.progress, closeTo(1 / 7, 1e-9));
+    expect(await repository.watchDeckSummary(99).first, isNull);
   });
 
   test('deleting a deck cascades to its cards and reviews', () async {

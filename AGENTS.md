@@ -41,6 +41,6 @@
 - SM-2 uses the current ease factor to compute the interval, then applies the grade's ease delta (Good, Good, Good produces 1, 6, 15 days). The tests encode the expected sequences.
 
 ## Scope
-- Build module-by-module per `instructions/implementation_plan.md`; Modules 0–3 are complete. Do not implement later modules unprompted.
+- Build module-by-module per `instructions/implementation_plan.md`; Modules 0–5 are complete. Do not implement later modules unprompted.
 - Locked behavior: ~60/40 flip/MC sessions, argument cards always Flip, usage example always shown, MC correct = Good / wrong = Again, streak only when the daily goal is met, 30+ achievements, weekly stats.
 - Out of scope for MVP: accounts/sync, AI or free-text recall, card creation, quick review (v2), Play Store.

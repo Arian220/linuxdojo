@@ -42,17 +42,29 @@ void main() {
     await database.close();
   });
 
-  test('loads only flip cards and starts unrevealed', () async {
-    final state = await container.read(studySessionProvider.future);
+  test(
+    'loads mixed due cards and builds four options for each MC card',
+    () async {
+      final state = await container.read(studySessionProvider.future);
 
-    expect(state.cards, hasLength(2));
-    expect(state.cards.every((card) => card.type == CardType.flip), isTrue);
-    expect(state.currentIndex, 0);
-    expect(state.isRevealed, isFalse);
-    expect(state.startedAt, now);
-  });
+      expect(state.cards, hasLength(8));
+      expect(
+        state.cards.where((card) => card.card.type == CardType.flip),
+        hasLength(4),
+      );
+      expect(state.cards.where((card) => card.isMultipleChoice), hasLength(4));
+      expect(state.cards[0].card.type, CardType.flip);
+      expect(state.cards[1].isMultipleChoice, isTrue);
+      expect(state.cards[1].options, hasLength(4));
+      expect(state.cards[1].options, contains('ls'));
+      expect(state.cards[1].options.toSet(), hasLength(4));
+      expect(state.currentIndex, 0);
+      expect(state.isRevealed, isFalse);
+      expect(state.startedAt, now);
+    },
+  );
 
-  test('reveals the current card', () async {
+  test('reveals the current flip card', () async {
     await container.read(studySessionProvider.future);
     final notifier = container.read(studySessionProvider.notifier);
 
@@ -62,23 +74,87 @@ void main() {
     expect(state.isRevealed, isTrue);
   });
 
-  test('grades the current card and advances to the next one', () async {
+  test('does not reveal a multiple choice card', () async {
     await container.read(studySessionProvider.future);
     final notifier = container.read(studySessionProvider.notifier);
     notifier.reveal();
-
     await notifier.grade(ReviewGrade.good);
 
-    final state = container.read(studySessionProvider).requireValue;
-    expect(state.currentIndex, 1);
-    expect(state.isRevealed, isFalse);
-    expect(state.reviewedCount, 1);
-    expect(state.correctCount, 1);
+    notifier.reveal();
 
-    final review = await ReviewRepository(database).getState(1);
+    final state = container.read(studySessionProvider).requireValue;
+    expect(state.currentCard!.isMultipleChoice, isTrue);
+    expect(state.isRevealed, isFalse);
+  });
+
+  test('selects an MC option and reports whether it is correct', () async {
+    await container.read(studySessionProvider.future);
+    final notifier = container.read(studySessionProvider.notifier);
+    notifier.reveal();
+    await notifier.grade(ReviewGrade.good);
+
+    notifier.selectOption('ls');
+
+    final state = container.read(studySessionProvider).requireValue;
+    expect(state.selectedOption, 'ls');
+    expect(state.isAnswered, isTrue);
+    expect(state.isCorrect, isTrue);
+
+    notifier.selectOption('cd');
+
+    expect(
+      container.read(studySessionProvider).requireValue.selectedOption,
+      'ls',
+    );
+  });
+
+  test('grades a correct MC answer as Good and advances', () async {
+    await container.read(studySessionProvider.future);
+    final notifier = container.read(studySessionProvider.notifier);
+    notifier.reveal();
+    await notifier.grade(ReviewGrade.good);
+
+    notifier.selectOption('ls');
+    await notifier.continueAfterMultipleChoice();
+
+    final state = container.read(studySessionProvider).requireValue;
+    expect(state.currentIndex, 2);
+    expect(state.reviewedCount, 2);
+    expect(state.correctCount, 2);
+    expect(state.isAnswered, isFalse);
+
+    final review = await ReviewRepository(database).getState(2);
     expect(review, isNotNull);
     expect(review!.repetitions, 1);
     expect(review.interval, 1);
+  });
+
+  test('auto-grades a wrong MC answer as Again', () async {
+    await container.read(studySessionProvider.future);
+    final notifier = container.read(studySessionProvider.notifier);
+    notifier.reveal();
+    await notifier.grade(ReviewGrade.good);
+
+    final mcCard = container
+        .read(studySessionProvider)
+        .requireValue
+        .currentCard!;
+    final wrongOption = mcCard.options.firstWhere(
+      (option) => option != mcCard.card.answer,
+    );
+
+    notifier.selectOption(wrongOption);
+    await notifier.continueAfterMultipleChoice();
+
+    final state = container.read(studySessionProvider).requireValue;
+    expect(state.reviewedCount, 2);
+    expect(state.correctCount, 1);
+
+    final review = await ReviewRepository(database).getState(2);
+    expect(review, isNotNull);
+    expect(review!.repetitions, 0);
+    expect(review.interval, 1);
+    expect(review.easeFactor, closeTo(1.7, 1e-9));
   });
 
   test('counts Again as an incorrect answer', () async {
@@ -98,48 +174,63 @@ void main() {
     expect(review.easeFactor, closeTo(1.7, 1e-9));
   });
 
-  test('records the completed session and builds a summary', () async {
+  test('records the completed mixed session and builds a summary', () async {
     await container.read(studySessionProvider.future);
     final notifier = container.read(studySessionProvider.notifier);
 
-    notifier.reveal();
-    await notifier.grade(ReviewGrade.good);
+    for (var index = 0; index < 8; index++) {
+      final current = container.read(studySessionProvider).requireValue;
+      final studyCard = current.currentCard!;
+      now = now.add(const Duration(seconds: 10));
 
-    now = now.add(const Duration(minutes: 4, seconds: 30));
-    notifier.reveal();
-    await notifier.grade(ReviewGrade.again);
+      if (studyCard.isMultipleChoice) {
+        notifier.selectOption(studyCard.card.answer);
+        await notifier.continueAfterMultipleChoice();
+      } else {
+        notifier.reveal();
+        await notifier.grade(ReviewGrade.good);
+      }
+    }
 
     final state = container.read(studySessionProvider).requireValue;
     expect(state.isComplete, isTrue);
     expect(state.summary, isNotNull);
-    expect(state.summary!.cardsReviewed, 2);
-    expect(state.summary!.correctAnswers, 1);
-    expect(state.summary!.elapsed, const Duration(minutes: 4, seconds: 30));
-    expect(state.summary!.dailyCards, 2);
+    expect(state.summary!.cardsReviewed, 8);
+    expect(state.summary!.correctAnswers, 8);
+    expect(state.summary!.elapsed, const Duration(seconds: 80));
+    expect(state.summary!.dailyCards, 8);
     expect(state.summary!.dailyGoal, SettingsRepository.defaultDailyGoal);
     expect(state.summary!.dailyGoalMet, isFalse);
 
     final sessions = await SessionRepository(database).getSessions();
     expect(sessions, hasLength(1));
-    expect(sessions.single.cardsReviewed, 2);
-    expect(sessions.single.correctAnswers, 1);
+    expect(sessions.single.cardsReviewed, 8);
+    expect(sessions.single.correctAnswers, 8);
   });
 
   test('marks the streak status met when the daily goal is reached', () async {
     await SettingsRepository(database)
-        .set(SettingsRepository.dailyGoalKey, '2');
+        .set(SettingsRepository.dailyGoalKey, '8');
 
     await container.read(studySessionProvider.future);
     final notifier = container.read(studySessionProvider.notifier);
 
-    notifier.reveal();
-    await notifier.grade(ReviewGrade.good);
-    notifier.reveal();
-    await notifier.grade(ReviewGrade.good);
+    for (var index = 0; index < 8; index++) {
+      final current = container.read(studySessionProvider).requireValue;
+      final studyCard = current.currentCard!;
+
+      if (studyCard.isMultipleChoice) {
+        notifier.selectOption(studyCard.card.answer);
+        await notifier.continueAfterMultipleChoice();
+      } else {
+        notifier.reveal();
+        await notifier.grade(ReviewGrade.good);
+      }
+    }
 
     final summary = container.read(studySessionProvider).requireValue.summary;
     expect(summary, isNotNull);
-    expect(summary!.dailyGoal, 2);
+    expect(summary!.dailyGoal, 8);
     expect(summary.dailyGoalMet, isTrue);
   });
 }

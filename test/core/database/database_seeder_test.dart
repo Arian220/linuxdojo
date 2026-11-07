@@ -27,10 +27,10 @@ void main() {
 
     expect(result.didSeed, isTrue);
     expect(result.decksInserted, 2);
-    expect(result.cardsInserted, 3);
+    expect(result.cardsInserted, 8);
     expect(await database.decks.count().getSingle(), 2);
-    expect(await database.cards.count().getSingle(), 3);
-    expect(await database.reviews.count().getSingle(), 3);
+    expect(await database.cards.count().getSingle(), 8);
+    expect(await database.reviews.count().getSingle(), 8);
 
     final reviews = await database.select(database.reviews).get();
     for (final review in reviews) {
@@ -51,7 +51,7 @@ void main() {
     expect(second.decksInserted, 0);
     expect(second.cardsInserted, 0);
     expect(await database.decks.count().getSingle(), 2);
-    expect(await database.cards.count().getSingle(), 3);
+    expect(await database.cards.count().getSingle(), 8);
   });
 
   test('persists card type, difficulty, and options', () async {

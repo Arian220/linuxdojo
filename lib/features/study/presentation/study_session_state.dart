@@ -1,4 +1,4 @@
-import 'package:linuxdojo/core/database/app_database.dart';
+import 'package:linuxdojo/features/study/domain/study_card.dart';
 
 class StudySessionState {
   const StudySessionState({
@@ -9,26 +9,32 @@ class StudySessionState {
     required this.reviewedCount,
     required this.correctCount,
     required this.isGrading,
+    this.selectedOption,
     this.finishedAt,
     this.summary,
   });
 
-  final List<CardEntry> cards;
+  final List<StudyCard> cards;
   final int currentIndex;
   final bool isRevealed;
   final DateTime startedAt;
   final int reviewedCount;
   final int correctCount;
   final bool isGrading;
+  final String? selectedOption;
   final DateTime? finishedAt;
   final StudySessionSummary? summary;
 
   bool get hasCards => cards.isNotEmpty;
   bool get isComplete => hasCards && currentIndex >= cards.length;
   int get total => cards.length;
-  CardEntry? get currentCard =>
+  StudyCard? get currentCard =>
       currentIndex < cards.length ? cards[currentIndex] : null;
   double get progress => total == 0 ? 0 : currentIndex / total;
+
+  bool get isMultipleChoice => currentCard?.isMultipleChoice ?? false;
+  bool get isAnswered => selectedOption != null;
+  bool get isCorrect => selectedOption == currentCard?.card.answer;
 
   StudySessionState copyWith({
     int? currentIndex,
@@ -36,6 +42,8 @@ class StudySessionState {
     int? reviewedCount,
     int? correctCount,
     bool? isGrading,
+    String? selectedOption,
+    bool clearSelection = false,
     DateTime? finishedAt,
     StudySessionSummary? summary,
   }) {
@@ -47,6 +55,9 @@ class StudySessionState {
       reviewedCount: reviewedCount ?? this.reviewedCount,
       correctCount: correctCount ?? this.correctCount,
       isGrading: isGrading ?? this.isGrading,
+      selectedOption: clearSelection
+          ? null
+          : (selectedOption ?? this.selectedOption),
       finishedAt: finishedAt ?? this.finishedAt,
       summary: summary ?? this.summary,
     );

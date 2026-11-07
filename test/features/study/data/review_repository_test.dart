@@ -91,7 +91,7 @@ void main() {
 
   test('grading a due card removes it from the due list', () async {
     final studyRepository = StudyRepository(database);
-    expect(await studyRepository.countDueCards(), 3);
+    expect(await studyRepository.countDueCards(), 8);
 
     await repository.applyGrade(
       cardId: 1,
@@ -99,7 +99,7 @@ void main() {
       reviewedAt: DateTime.now(),
     );
 
-    expect(await studyRepository.countDueCards(), 2);
+    expect(await studyRepository.countDueCards(), 7);
   });
 
   test('multiple choice mapping auto-grades wrong answers as Again', () async {

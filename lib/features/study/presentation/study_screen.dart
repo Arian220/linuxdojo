@@ -6,6 +6,7 @@ import 'package:linuxdojo/features/study/presentation/session_summary_screen.dar
 import 'package:linuxdojo/features/study/presentation/study_session_provider.dart';
 import 'package:linuxdojo/features/study/presentation/study_session_state.dart';
 import 'package:linuxdojo/features/study/presentation/widgets/flip_card.dart';
+import 'package:linuxdojo/features/study/presentation/widgets/multiple_choice_card.dart';
 
 class StudyScreen extends ConsumerWidget {
   const StudyScreen({super.key});
@@ -45,6 +46,11 @@ class StudyScreen extends ConsumerWidget {
             onReveal: () => ref.read(studySessionProvider.notifier).reveal(),
             onGrade: (grade) =>
                 ref.read(studySessionProvider.notifier).grade(grade),
+            onSelectOption: (option) =>
+                ref.read(studySessionProvider.notifier).selectOption(option),
+            onContinueMultipleChoice: () => ref
+                .read(studySessionProvider.notifier)
+                .continueAfterMultipleChoice(),
           ),
         ),
       ),
@@ -57,11 +63,15 @@ class _StudyBody extends StatelessWidget {
     required this.state,
     required this.onReveal,
     required this.onGrade,
+    required this.onSelectOption,
+    required this.onContinueMultipleChoice,
   });
 
   final StudySessionState state;
   final VoidCallback onReveal;
   final ValueChanged<ReviewGrade> onGrade;
+  final ValueChanged<String> onSelectOption;
+  final VoidCallback onContinueMultipleChoice;
 
   @override
   Widget build(BuildContext context) {
@@ -116,29 +126,63 @@ class _StudyBody extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Expanded(
-            child: FlipCard(
-              key: ValueKey(card.id),
-              card: card,
-              isRevealed: state.isRevealed,
-              onTap: state.isGrading ? null : onReveal,
-            ),
-          ),
-          const SizedBox(height: 20),
-          SizedBox(
-            height: 56,
-            child: state.isRevealed
-                ? _GradeButtons(enabled: !state.isGrading, onGrade: onGrade)
-                : Center(
-                    child: Text(
-                      'Tap the card to reveal the answer.',
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
+            child: card.isMultipleChoice
+                ? MultipleChoiceCard(
+                    key: ValueKey(card.card.id),
+                    studyCard: card,
+                    selectedOption: state.selectedOption,
+                    enabled: !state.isGrading,
+                    onSelect: onSelectOption,
+                  )
+                : FlipCard(
+                    key: ValueKey(card.card.id),
+                    card: card.card,
+                    isRevealed: state.isRevealed,
+                    onTap: state.isGrading ? null : onReveal,
                   ),
           ),
+          const SizedBox(height: 20),
+          SizedBox(height: 56, child: _buildAction()),
         ],
+      ),
+    );
+  }
+
+  Widget _buildAction() {
+    if (state.isMultipleChoice) {
+      if (state.isAnswered) {
+        return FilledButton(
+          onPressed: state.isGrading ? null : onContinueMultipleChoice,
+          child: const Text('Continue'),
+        );
+      }
+      return const _SessionHint(text: 'Select the best option.');
+    }
+
+    if (state.isRevealed) {
+      return _GradeButtons(enabled: !state.isGrading, onGrade: onGrade);
+    }
+
+    return const _SessionHint(text: 'Tap the card to reveal the answer.');
+  }
+}
+
+class _SessionHint extends StatelessWidget {
+  const _SessionHint({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Center(
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: theme.textTheme.bodySmall?.copyWith(
+          color: theme.colorScheme.onSurfaceVariant,
+        ),
       ),
     );
   }
@@ -240,7 +284,7 @@ class _EmptyStudyState extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             Text(
-              'No flip cards due',
+              'No cards due',
               textAlign: TextAlign.center,
               style: theme.textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.w600,

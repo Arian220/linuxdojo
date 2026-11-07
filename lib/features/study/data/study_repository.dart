@@ -42,6 +42,13 @@ class StudyRepository {
     return query.getSingleOrNull();
   }
 
+  Future<List<CardEntry>> getCardsForDeck(int deckId) {
+    final query = _database.select(_database.cards)
+      ..where((card) => card.deckId.equals(deckId))
+      ..orderBy([(card) => OrderingTerm.asc(card.id)]);
+    return query.get();
+  }
+
   Selectable<TypedResult> _dueCardsQuery(DateTime? at) {
     final query =
         _database.select(_database.cards).join([

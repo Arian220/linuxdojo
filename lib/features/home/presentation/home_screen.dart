@@ -10,7 +10,7 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final dueCards = ref.watch(dueFlipCardsProvider);
+    final dueCards = ref.watch(dueCardsProvider);
     final hasDueCards = dueCards.value?.isNotEmpty ?? false;
 
     return Scaffold(
@@ -119,7 +119,7 @@ class _DueCardsSummary extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            'No flip cards are due right now.',
+            'No cards are due right now.',
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
@@ -140,7 +140,7 @@ class _DueCardsSummary extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          count == 1 ? 'flip card due' : 'flip cards due',
+          count == 1 ? 'card due' : 'cards due',
           style: theme.textTheme.titleMedium?.copyWith(
             color: theme.colorScheme.onSurfaceVariant,
           ),
