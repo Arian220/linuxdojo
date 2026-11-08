@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linuxdojo/core/database/database_provider.dart';
 import 'package:linuxdojo/features/notifications/data/reminder_service.dart';
@@ -14,5 +15,7 @@ final appStartupProvider = FutureProvider<void>((ref) async {
 
   try {
     await reminderService.sync();
-  } catch (_) {}
+  } catch (error, stackTrace) {
+    debugPrint('Could not synchronize reminders: $error\n$stackTrace');
+  }
 });

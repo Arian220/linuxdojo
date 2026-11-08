@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:linuxdojo/features/notifications/data/local_notification_plugin.dart';
 import 'package:linuxdojo/features/notifications/data/reminder_scheduler.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
@@ -17,43 +18,20 @@ class LocalReminderScheduler implements ReminderScheduler {
   Future<void> scheduleDaily(DateTime scheduledAt) async {
     if (!Platform.isAndroid && !Platform.isIOS) return;
 
-    final plugin = FlutterLocalNotificationsPlugin();
-    await plugin.initialize(
-      settings: const InitializationSettings(
-        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-        iOS: DarwinInitializationSettings(
-          requestAlertPermission: false,
-          requestBadgePermission: false,
-          requestSoundPermission: false,
-        ),
-      ),
-    );
+    await initializeLocalNotifications();
 
     final location = await _localLocation();
     final now = tz.TZDateTime.now(location);
-    var target = tz.TZDateTime(
-      location,
-      scheduledAt.year,
-      scheduledAt.month,
-      scheduledAt.day,
-      scheduledAt.hour,
-      scheduledAt.minute,
+    final target = reminderScheduleTarget(
+      location: location,
+      scheduledAt: scheduledAt,
+      now: now,
     );
-    if (!target.isAfter(now)) {
-      target = tz.TZDateTime(
-        location,
-        scheduledAt.year,
-        scheduledAt.month,
-        scheduledAt.day + 1,
-        scheduledAt.hour,
-        scheduledAt.minute,
-      );
-    }
 
-    await plugin.zonedSchedule(
+    await localNotificationsPlugin.zonedSchedule(
       id: _notificationId,
       title: 'Time to practice Linux',
-      body: 'Keep your streak alive with a quick LinuxDojo session.',
+      body: "Review Linux commands and make progress toward today's goal.",
       scheduledDate: target,
       notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
@@ -75,33 +53,41 @@ class LocalReminderScheduler implements ReminderScheduler {
   Future<void> cancelDaily() async {
     if (!Platform.isAndroid && !Platform.isIOS) return;
 
-    final plugin = FlutterLocalNotificationsPlugin();
-    await plugin.initialize(
-      settings: const InitializationSettings(
-        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-        iOS: DarwinInitializationSettings(
-          requestAlertPermission: false,
-          requestBadgePermission: false,
-          requestSoundPermission: false,
-        ),
-      ),
-    );
-    await plugin.cancel(id: _notificationId);
+    await initializeLocalNotifications();
+    await localNotificationsPlugin.cancel(id: _notificationId);
   }
 
   Future<tz.Location> _localLocation() async {
     tz_data.initializeTimeZones();
-
-    try {
-      final info = await FlutterTimezone.getLocalTimezone();
-      return tz.getLocation(info.identifier);
-    } catch (_) {
-      final offset = DateTime.now().timeZoneOffset;
-      return tz.Location('local', [tz.minTime], [0], [
-        tz.TimeZone(offset, isDst: false, abbreviation: 'LOCAL'),
-      ]);
-    }
+    final info = await FlutterTimezone.getLocalTimezone();
+    return tz.getLocation(info.identifier);
   }
+}
+
+tz.TZDateTime reminderScheduleTarget({
+  required tz.Location location,
+  required DateTime scheduledAt,
+  required tz.TZDateTime now,
+}) {
+  var target = tz.TZDateTime(
+    location,
+    scheduledAt.year,
+    scheduledAt.month,
+    scheduledAt.day,
+    scheduledAt.hour,
+    scheduledAt.minute,
+  );
+  if (!target.isAfter(now)) {
+    target = tz.TZDateTime(
+      location,
+      scheduledAt.year,
+      scheduledAt.month,
+      scheduledAt.day + 1,
+      scheduledAt.hour,
+      scheduledAt.minute,
+    );
+  }
+  return target;
 }
 
 final reminderSchedulerProvider = Provider<ReminderScheduler>((ref) {

@@ -145,6 +145,48 @@ void main() {
     await tester.pump();
   });
 
+  testWidgets('reschedules reminders after the daily goal changes', (
+    tester,
+  ) async {
+    await settings.setRemindersEnabled(true);
+    final scheduler = FakeReminderScheduler();
+    await tester.pumpWidget(buildSettings(scheduler: scheduler));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Daily goal'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('20 cards per day'));
+    await tester.pumpAndSettle();
+
+    expect(await settings.getDailyGoal(), 20);
+    expect(scheduler.scheduleCalls, 1);
+
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump();
+  });
+
+  testWidgets(
+    'offers system settings when notification permission is revoked',
+    (tester) async {
+      await settings.setRemindersEnabled(true);
+      final notifications = FakeNotificationPermissionService(granted: false);
+      await tester.pumpWidget(buildSettings(notifications: notifications));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('Notifications are blocked by the system.'),
+        findsOneWidget,
+      );
+      await tester.tap(find.text('Open notification settings'));
+      await tester.pumpAndSettle();
+
+      expect(notifications.settingsCalls, 1);
+
+      await tester.pumpWidget(const SizedBox());
+      await tester.pump();
+    },
+  );
+
   testWidgets('resets study data after confirmation', (tester) async {
     final now = DateTime(2026, 3, 10, 12);
     await settings.setDailyGoal(20);

@@ -7,6 +7,7 @@ import 'package:linuxdojo/core/database/database_provider.dart';
 import 'package:linuxdojo/core/database/seed/database_seeder.dart';
 import 'package:linuxdojo/core/widgets/linuxdojo_logo.dart';
 import 'package:linuxdojo/features/notifications/data/local_reminder_scheduler.dart';
+import 'package:linuxdojo/features/notifications/domain/reminder_intent.dart';
 import 'package:linuxdojo/features/settings/data/notification_permission_service.dart';
 import 'package:linuxdojo/features/settings/data/settings_repository.dart';
 import 'package:linuxdojo/features/settings/domain/experience_level.dart';
@@ -95,5 +96,31 @@ void main() {
 
     await tester.pumpWidget(const SizedBox());
     await tester.pump();
+  });
+
+  testWidgets('opens a study session from a notification tap', (tester) async {
+    await SettingsRepository(database).setOnboardingComplete();
+    ReminderIntent.studyRequests.value = 0;
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          appDatabaseProvider.overrideWithValue(database),
+          notificationPermissionServiceProvider.overrideWithValue(
+            notifications,
+          ),
+          reminderSchedulerProvider.overrideWithValue(scheduler),
+        ],
+        child: const LinuxDojoApp(),
+      ),
+    );
+    ReminderIntent.openStudy();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Study'), findsOneWidget);
+
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump();
+    ReminderIntent.studyRequests.value = 0;
   });
 }

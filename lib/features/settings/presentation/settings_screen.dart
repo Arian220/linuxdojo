@@ -19,6 +19,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(appSettingsProvider);
+    final notificationPermission = ref.watch(notificationPermissionProvider);
 
     return Scaffold(
       appBar: const LinuxDojoAppBar(
@@ -43,7 +44,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 subtitle: '${settings.dailyGoal} cards per day',
                 onTap: () => _chooseDailyGoal(settings),
               ),
-              _ReminderTile(enabled: settings.remindersEnabled),
+              _ReminderTile(
+                enabled: settings.remindersEnabled,
+                permissionGranted: notificationPermission.value,
+                permissionCheckFailed: notificationPermission.hasError,
+              ),
               const SizedBox(height: 24),
               const _SectionHeader('Data'),
               _SettingsTile(
@@ -152,6 +157,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
     if (selected == null) return;
     await ref.read(settingsRepositoryProvider).setDailyGoal(selected);
+    if (settings.remindersEnabled) {
+      try {
+        await ref.read(reminderServiceProvider).sync();
+      } catch (error) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(_reminderErrorMessage(error))));
+      }
+    }
+  }
+
+  String _reminderErrorMessage(Object error) {
+    if (error is ReminderPermissionDeniedException) {
+      return 'Notifications are blocked. Enable them in system settings.';
+    }
+    return 'Could not update the reminder. Try again from Settings.';
   }
 
   Future<void> _confirmReset() async {
@@ -222,9 +244,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 }
 
 class _ReminderTile extends ConsumerStatefulWidget {
-  const _ReminderTile({required this.enabled});
+  const _ReminderTile({
+    required this.enabled,
+    required this.permissionGranted,
+    required this.permissionCheckFailed,
+  });
 
   final bool enabled;
+  final bool? permissionGranted;
+  final bool permissionCheckFailed;
 
   @override
   ConsumerState<_ReminderTile> createState() => _ReminderTileState();
@@ -240,32 +268,82 @@ class _ReminderTileState extends ConsumerState<_ReminderTile> {
     }
 
     setState(() => _busy = true);
-    final granted = await ref
-        .read(notificationPermissionServiceProvider)
-        .requestPermission();
+    late final bool granted;
+    try {
+      granted = await ref
+          .read(notificationPermissionServiceProvider)
+          .requestPermission();
+    } catch (error, stackTrace) {
+      debugPrint(
+        'Could not request notification permission: $error\n$stackTrace',
+      );
+      if (!mounted) return;
+      setState(() => _busy = false);
+      _showPermissionDeniedMessage();
+      return;
+    }
     if (!mounted) return;
 
     setState(() => _busy = false);
     if (!granted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Notification permission is required for reminders.'),
-        ),
-      );
+      _showPermissionDeniedMessage();
+      ref.invalidate(notificationPermissionProvider);
       return;
     }
 
     await _save(true);
+    ref.invalidate(notificationPermissionProvider);
   }
 
   Future<void> _save(bool enabled) async {
     try {
       await ref.read(settingsRepositoryProvider).setRemindersEnabled(enabled);
       await ref.read(reminderServiceProvider).sync();
+      ref.invalidate(appSettingsProvider);
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not save reminder setting.')),
+        const SnackBar(
+          content: Text(
+            'Could not update the reminder. Check notification permissions and try again.',
+          ),
+        ),
+      );
+    }
+  }
+
+  void _showPermissionDeniedMessage() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text(
+          'Notification permission is required for reminders.',
+        ),
+        action: SnackBarAction(
+          label: 'Open settings',
+          onPressed: _openNotificationSettings,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _openNotificationSettings() async {
+    try {
+      final opened = await ref
+          .read(notificationPermissionServiceProvider)
+          .openSettings();
+      if (!mounted) return;
+      if (!opened) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Could not open notification settings.'),
+          ),
+        );
+      }
+      ref.invalidate(notificationPermissionProvider);
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not open notification settings.')),
       );
     }
   }
@@ -283,26 +361,45 @@ class _ReminderTileState extends ConsumerState<_ReminderTile> {
           side: BorderSide(color: theme.colorScheme.outline),
         ),
         clipBehavior: Clip.antiAlias,
-        child: SwitchListTile(
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 6,
-          ),
-          value: widget.enabled,
-          onChanged: _busy ? null : _onChanged,
-          secondary: _busy
-              ? const SizedBox(
-                  width: 22,
-                  height: 22,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Icon(Icons.notifications_outlined),
-          title: const Text('Reminders'),
-          subtitle: Text(
-            _busy
-                ? 'Requesting notification permission…'
-                : 'Daily reminder at a smart time based on your study habits.',
-          ),
+        child: Column(
+          children: [
+            SwitchListTile(
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 6,
+              ),
+              value: widget.enabled,
+              onChanged: _busy ? null : _onChanged,
+              secondary: _busy
+                  ? const SizedBox(
+                      width: 22,
+                      height: 22,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.notifications_outlined),
+              title: const Text('Reminders'),
+              subtitle: Text(
+                _busy
+                    ? 'Requesting notification permission…'
+                    : widget.enabled && widget.permissionGranted == false
+                    ? 'Notifications are blocked by the system.'
+                    : widget.enabled && widget.permissionCheckFailed
+                    ? 'Could not check notification permissions.'
+                    : 'Daily reminder at a smart time based on your study habits.',
+              ),
+            ),
+            if (widget.enabled &&
+                (widget.permissionGranted == false ||
+                    widget.permissionCheckFailed))
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton.icon(
+                  onPressed: _openNotificationSettings,
+                  icon: const Icon(Icons.open_in_new),
+                  label: const Text('Open notification settings'),
+                ),
+              ),
+          ],
         ),
       ),
     );

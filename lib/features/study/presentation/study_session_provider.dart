@@ -1,9 +1,11 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linuxdojo/core/database/app_database.dart';
 import 'package:linuxdojo/core/models/card_type.dart';
 import 'package:linuxdojo/features/settings/data/settings_repository.dart';
+import 'package:linuxdojo/features/notifications/data/reminder_service.dart';
 import 'package:linuxdojo/features/stats/data/achievement_service.dart';
 import 'package:linuxdojo/features/study/data/review_repository.dart';
 import 'package:linuxdojo/features/study/data/session_repository.dart';
@@ -210,6 +212,15 @@ class StudySessionNotifier extends AsyncNotifier<StudySessionState> {
 
       if (isComplete) {
         finishedAt = reviewedAt;
+        try {
+          await ref.read(reminderServiceProvider).sync(now: reviewedAt);
+        } catch (error, stackTrace) {
+          debugPrint(
+            'Could not refresh reminder after study: $error\n$stackTrace',
+          );
+        }
+        if (!ref.mounted) return;
+
         try {
           await ref.read(achievementServiceProvider).sync();
         } catch (_) {}

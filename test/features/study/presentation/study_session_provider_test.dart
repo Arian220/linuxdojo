@@ -8,6 +8,8 @@ import 'package:linuxdojo/core/database/database_provider.dart';
 import 'package:linuxdojo/core/database/seed/database_seeder.dart';
 import 'package:linuxdojo/core/models/card_type.dart';
 import 'package:linuxdojo/core/models/difficulty_tag.dart';
+import 'package:linuxdojo/features/notifications/data/local_reminder_scheduler.dart';
+import 'package:linuxdojo/features/settings/data/notification_permission_service.dart';
 import 'package:linuxdojo/features/settings/data/settings_repository.dart';
 import 'package:linuxdojo/features/stats/data/achievement_repository.dart';
 import 'package:linuxdojo/features/stats/data/stats_repository.dart';
@@ -18,6 +20,8 @@ import 'package:linuxdojo/features/study/presentation/study_session_provider.dar
 import 'package:linuxdojo/features/study/presentation/study_session_state.dart';
 
 import '../../../helpers/fake_seed_source.dart';
+import '../../../helpers/fake_notification_permission_service.dart';
+import '../../../helpers/fake_reminder_scheduler.dart';
 import '../../../helpers/sample_seed_data.dart';
 import '../../../helpers/test_database.dart';
 
@@ -25,6 +29,8 @@ void main() {
   late AppDatabase database;
   late ProviderContainer container;
   late ProviderSubscription<AsyncValue<StudySessionState>> subscription;
+  late FakeNotificationPermissionService permissions;
+  late FakeReminderScheduler scheduler;
   late DateTime now;
 
   setUp(() async {
@@ -32,12 +38,16 @@ void main() {
     await const DatabaseSeeder(FakeSeedSource(sampleDecks))
         .seedIfEmpty(database);
     now = DateTime(2026, 3, 1, 10);
+    permissions = FakeNotificationPermissionService();
+    scheduler = FakeReminderScheduler();
 
     container = ProviderContainer(
       overrides: [
         appDatabaseProvider.overrideWithValue(database),
         clockProvider.overrideWithValue(() => now),
         sessionRandomProvider.overrideWithValue(Random(3)),
+        notificationPermissionServiceProvider.overrideWithValue(permissions),
+        reminderSchedulerProvider.overrideWithValue(scheduler),
       ],
     );
     subscription = container.listen(studySessionProvider, (_, _) {});
@@ -222,6 +232,7 @@ void main() {
   });
 
   test('records the completed mixed session and builds a summary', () async {
+    await SettingsRepository(database).setRemindersEnabled(true);
     await container.read(studySessionProvider.future);
     final notifier = container.read(studySessionProvider.notifier);
 
@@ -260,6 +271,7 @@ void main() {
       await AchievementRepository(database).isUnlocked('first_session'),
       isTrue,
     );
+    expect(scheduler.scheduleCalls, 1);
   });
 
   test('marks the streak status met when the daily goal is reached', () async {

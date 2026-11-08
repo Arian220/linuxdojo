@@ -14,15 +14,11 @@ accounts, network calls, or tracking.
 ## Screenshots
 
 <p align="center">
-  <img src="docs/screenshots/home.png" width="190" alt="Home screen with streak, due cards, and Study button">
-  <img src="docs/screenshots/decks.png" width="190" alt="Deck browser with mastery progress">
-  <img src="docs/screenshots/stats.png" width="190" alt="Weekly stats and streak progress">
-  <img src="docs/screenshots/study-multiple-choice.png" width="190" alt="Multiple choice card with feedback and usage example">
+  <img src="docs/screenshots/home.jpg" width="190" alt="Home screen with streak, due cards, and Study button">
+  <img src="docs/screenshots/decks.jpg" width="190" alt="Deck browser with mastery progress">
+  <img src="docs/screenshots/stats.jpg" width="190" alt="Weekly stats and streak progress">
 </p>
 
-<p align="center">
-  <img src="docs/screenshots/flip.gif" width="240" alt="Flip card animation revealing the answer and usage example">
-</p>
 
 ## Features
 
@@ -39,7 +35,10 @@ accounts, network calls, or tracking.
 - **Daily streaks, 42 achievements, and weekly activity stats.** Streaks count
   only when the daily goal is met, and achievements live on their own screen.
 - **Smart local reminders** scheduled at a time derived from recent study
-  patterns, streak, goal, and a safe waking window.
+  patterns, streak, goal, and a safe waking window. They skip the rest of a
+  day once its goal is met, open a study session when tapped, and reschedule
+  after sessions, goal changes, and app resume. Notification access can be
+  restored from Settings; Android restores scheduled reminders after reboot.
 - **First-launch onboarding and persistent settings** for experience level,
   daily goal, reminders, and progress reset.
 - **Dark-only, terminal-inspired Material 3 UI** with monospace command accents.
@@ -90,7 +89,7 @@ flutter build apk --release
 ```
 
 The APK is written to `build/app/outputs/flutter-apk/`. LinuxDojo is distributed
-as an APK; there is no Play Store release for the MVP.
+as an APK; there is no Play Store release.
 
 ## Project structure
 
@@ -112,16 +111,6 @@ lib/
     ├── onboarding/          # First-launch preference flow
     └── shell/               # Bottom navigation shell
 ```
-
-## Roadmap
-
-- **v1.0 MVP** — current: hybrid offline study, SM-2 scheduling, 8 decks,
-  streaks, achievements, weekly stats, onboarding, settings, and smart local
-  reminders.
-- **v2** — quick review mode (no metrics stored) and local card creation.
-- **Later** — iOS release when a macOS build environment is available.
-- **Not planned for MVP** — accounts, cloud sync, AI/free-text recall, light
-  theme, or a Play Store release.
 
 ## License
 

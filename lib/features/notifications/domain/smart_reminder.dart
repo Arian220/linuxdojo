@@ -43,6 +43,7 @@ class SmartReminder {
     required List<ReminderSession> sessions,
     required int currentStreak,
     required int dailyGoal,
+    bool dailyGoalMetToday = false,
     required DateTime now,
     required Random random,
   }) {
@@ -70,7 +71,7 @@ class SmartReminder {
     final hour = minuteOfDay ~/ 60;
     final minute = minuteOfDay % 60;
     var scheduledAt = DateTime(now.year, now.month, now.day, hour, minute);
-    if (!scheduledAt.isAfter(now)) {
+    if (dailyGoalMetToday || !scheduledAt.isAfter(now)) {
       scheduledAt = DateTime(now.year, now.month, now.day + 1, hour, minute);
     }
 

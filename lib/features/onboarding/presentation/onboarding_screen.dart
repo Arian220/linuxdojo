@@ -56,9 +56,20 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     }
 
     setState(() => _requestingPermission = true);
-    final granted = await ref
-        .read(notificationPermissionServiceProvider)
-        .requestPermission();
+    late final bool granted;
+    try {
+      granted = await ref
+          .read(notificationPermissionServiceProvider)
+          .requestPermission();
+    } catch (error, stackTrace) {
+      debugPrint(
+        'Could not request notification permission: $error\n$stackTrace',
+      );
+      if (!mounted) return;
+      setState(() => _requestingPermission = false);
+      _showPermissionDeniedMessage();
+      return;
+    }
     if (!mounted) return;
 
     setState(() {
@@ -67,10 +78,41 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     });
 
     if (!granted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Notification permission is required for reminders.'),
+      _showPermissionDeniedMessage();
+    }
+  }
+
+  void _showPermissionDeniedMessage() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text(
+          'Notification permission is required for reminders.',
         ),
+        action: SnackBarAction(
+          label: 'Open settings',
+          onPressed: _openNotificationSettings,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _openNotificationSettings() async {
+    try {
+      final opened = await ref
+          .read(notificationPermissionServiceProvider)
+          .openSettings();
+      if (!opened && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Could not open notification settings.'),
+          ),
+        );
+      }
+    } catch (error, stackTrace) {
+      debugPrint('Could not open notification settings: $error\n$stackTrace');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not open notification settings.')),
       );
     }
   }
