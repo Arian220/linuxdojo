@@ -7,7 +7,7 @@
     {
       "prompt": "What does `pwd` do?",
       "answer": "Prints the current working directory.",
-      "example": "pwd\n/home/ari",
+      "example": "pwd\n/home/usr",
       "type": "flip",
       "difficulty_tag": "novice"
     },
@@ -28,7 +28,7 @@
     {
       "prompt": "What does `cd ..` do?",
       "answer": "Moves up one directory level.",
-      "example": "cd /home/ari/projects\ncd ..\npwd\n/home/ari",
+      "example": "cd /home/usr/projects\ncd ..\npwd\n/home/usr",
       "type": "flip",
       "difficulty_tag": "novice"
     },

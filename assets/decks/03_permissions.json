@@ -33,16 +33,16 @@
       "difficulty_tag": "user"
     },
     {
-      "prompt": "What does `chown ari file.txt` do?",
-      "answer": "Changes the owner of file.txt to ari.",
-      "example": "sudo chown ari file.txt",
+      "prompt": "What does `chown usr file.txt` do?",
+      "answer": "Changes the owner of file.txt to usr.",
+      "example": "sudo chown usr file.txt",
       "type": "flip",
       "difficulty_tag": "admin"
     },
     {
       "prompt": "Which command changes both the owner and group?",
-      "answer": "chown ari:dev",
-      "example": "sudo chown ari:dev file.txt",
+      "answer": "chown usr:dev",
+      "example": "sudo chown usr:dev file.txt",
       "type": "multiple_choice",
       "difficulty_tag": "admin"
     },

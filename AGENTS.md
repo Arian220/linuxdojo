@@ -17,7 +17,7 @@
 
 ## Architecture
 - Feature-first: put feature code in `lib/features/<feature>/{data,domain,presentation}`; shared database/theme/models go in `lib/core`.
-- `lib/main.dart` creates a `ProviderContainer`, awaits `databaseSeedProvider`, then runs the app. Seeding happens before the first frame.
+- `lib/main.dart` creates a `ProviderContainer` and runs the app immediately. `AppGate` shows its loading screen while `appStartupProvider` seeds the database and syncs achievements and reminders; native splash resources should remain a plain dark background.
 - Drift schema is in `lib/core/database/tables.dart`. `app_database.g.dart` is generated and committed; never hand-edit it.
 - Repositories own their Riverpod providers and receive `AppDatabase` via `appDatabaseProvider`.
 - SM-2 lives in `lib/features/study/domain/`; `ReviewRepository` persists schedule changes.
@@ -41,6 +41,6 @@
 - SM-2 uses the current ease factor to compute the interval, then applies the grade's ease delta (Good, Good, Good produces 1, 6, 15 days). The tests encode the expected sequences.
 
 ## Scope
-- Build module-by-module per `instructions/implementation_plan.md`; Modules 0–7 are complete. Do not implement later modules unprompted.
-- Locked behavior: ~60/40 flip/MC sessions, argument cards always Flip, usage example always shown, MC correct = Good / wrong = Again, streak only when the daily goal is met, 30+ achievements, weekly stats.
+- Build module-by-module per `instructions/implementation_plan.md`; Modules 0–8 are complete and Module 9 release polish is in progress. Do not add post-MVP features unprompted.
+- Locked behavior: study sessions match the configured daily goal, ~60/40 flip/MC, argument cards always Flip, usage example always shown, MC correct = Good / wrong = Again, streak only when the daily goal is met, 30+ achievements on their own screen, weekly stats.
 - Out of scope for MVP: accounts/sync, AI or free-text recall, card creation, quick review (v2), Play Store.

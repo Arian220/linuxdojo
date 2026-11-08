@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linuxdojo/core/theme/app_colors.dart';
+import 'package:linuxdojo/core/widgets/linuxdojo_app_bar.dart';
 import 'package:linuxdojo/features/study/domain/review_grade.dart';
 import 'package:linuxdojo/features/study/presentation/session_summary_screen.dart';
 import 'package:linuxdojo/features/study/presentation/study_session_provider.dart';
@@ -28,8 +29,9 @@ class StudyScreen extends ConsumerWidget {
     });
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Study'),
+      appBar: LinuxDojoAppBar(
+        title: 'Study',
+        icon: Icons.school_outlined,
         leading: IconButton(
           tooltip: 'Close session',
           icon: const Icon(Icons.close),
@@ -245,6 +247,8 @@ class _GradeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Expanded(
       child: FilledButton(
         onPressed: onPressed,
@@ -256,7 +260,10 @@ class _GradeButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+          textStyle: theme.textTheme.labelLarge?.copyWith(
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+          ),
         ),
         child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
       ),

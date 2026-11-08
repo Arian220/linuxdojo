@@ -27,8 +27,8 @@ class FlipCard extends StatelessWidget {
         onTap: isRevealed ? null : onTap,
         child: TweenAnimationBuilder<double>(
           tween: Tween(begin: 0, end: isRevealed ? 1 : 0),
-          duration: const Duration(milliseconds: 400),
-          curve: Curves.easeInOutCubic,
+          duration: const Duration(milliseconds: 320),
+          curve: Curves.easeInOutCubicEmphasized,
           builder: (context, value, _) {
             final angle = value * math.pi;
             final showAnswer = angle >= math.pi / 2;

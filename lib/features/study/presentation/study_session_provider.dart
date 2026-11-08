@@ -31,18 +31,22 @@ final studySessionProvider =
     );
 
 class StudySessionNotifier extends AsyncNotifier<StudySessionState> {
+  int? _sessionLogId;
+
   @override
   Future<StudySessionState> build() async {
     final repository = ref.watch(studyRepositoryProvider);
+    final dailyGoal = await ref.read(settingsRepositoryProvider).getDailyGoal();
     final dueCards = await repository.getDueCards();
     final random = ref.read(sessionRandomProvider);
     final shuffled = dueCards.toList()..shuffle(random);
+    final sessionCards = shuffled.take(dailyGoal);
 
     final generator = ref.read(distractorGeneratorProvider);
     final deckCards = <int, List<CardEntry>>{};
     final cards = <StudyCard>[];
 
-    for (final card in shuffled) {
+    for (final card in sessionCards) {
       if (card.type == CardType.multipleChoice) {
         final pool = deckCards[card.deckId] ??= await repository
             .getCardsForDeck(card.deckId);
@@ -175,14 +179,11 @@ class StudySessionNotifier extends AsyncNotifier<StudySessionState> {
       );
       final nextIndex = current.currentIndex + 1;
       final isComplete = nextIndex >= current.cards.length;
+      final sessionRepository = ref.read(sessionRepositoryProvider);
+      final sessionLogId = _sessionLogId;
 
-      StudySessionSummary? summary;
-      DateTime? finishedAt;
-
-      if (isComplete) {
-        finishedAt = reviewedAt;
-        final sessionRepository = ref.read(sessionRepositoryProvider);
-        await sessionRepository.recordSession(
+      if (sessionLogId == null) {
+        _sessionLogId = await sessionRepository.recordSession(
           startedAt: current.startedAt,
           endedAt: reviewedAt,
           cardsReviewed: reviewedCount,
@@ -191,8 +192,24 @@ class StudySessionNotifier extends AsyncNotifier<StudySessionState> {
           multipleChoiceCorrect: multipleChoiceCorrect,
           bestMultipleChoiceStreak: bestMultipleChoiceStreak,
         );
-        if (!ref.mounted) return;
+      } else {
+        await sessionRepository.updateSession(
+          id: sessionLogId,
+          endedAt: reviewedAt,
+          cardsReviewed: reviewedCount,
+          correctAnswers: correctCount,
+          multipleChoiceAnswered: multipleChoiceAnswered,
+          multipleChoiceCorrect: multipleChoiceCorrect,
+          bestMultipleChoiceStreak: bestMultipleChoiceStreak,
+        );
+      }
+      if (!ref.mounted) return;
 
+      StudySessionSummary? summary;
+      DateTime? finishedAt;
+
+      if (isComplete) {
+        finishedAt = reviewedAt;
         try {
           await ref.read(achievementServiceProvider).sync();
         } catch (_) {}

@@ -32,6 +32,29 @@ class SessionRepository {
         );
   }
 
+  Future<void> updateSession({
+    required int id,
+    required DateTime endedAt,
+    required int cardsReviewed,
+    required int correctAnswers,
+    required int multipleChoiceAnswered,
+    required int multipleChoiceCorrect,
+    required int bestMultipleChoiceStreak,
+  }) {
+    return (_database.update(
+      _database.sessionLogs,
+    )..where((session) => session.id.equals(id))).write(
+      SessionLogsCompanion(
+        endedAt: Value(endedAt),
+        cardsReviewed: Value(cardsReviewed),
+        correctAnswers: Value(correctAnswers),
+        multipleChoiceAnswered: Value(multipleChoiceAnswered),
+        multipleChoiceCorrect: Value(multipleChoiceCorrect),
+        bestMultipleChoiceStreak: Value(bestMultipleChoiceStreak),
+      ),
+    );
+  }
+
   Future<List<SessionLog>> getSessions({int limit = 30}) {
     final query = _database.select(_database.sessionLogs)
       ..orderBy([(session) => OrderingTerm.desc(session.startedAt)])

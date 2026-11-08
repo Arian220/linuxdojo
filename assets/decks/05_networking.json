@@ -96,9 +96,9 @@
       "difficulty_tag": "admin"
     },
     {
-      "prompt": "What does `ssh ari@server` do?",
-      "answer": "Opens a remote shell on server as ari.",
-      "example": "ssh ari@server",
+      "prompt": "What does `ssh usr@server` do?",
+      "answer": "Opens a remote shell on server as usr.",
+      "example": "ssh usr@server",
       "type": "flip",
       "difficulty_tag": "user"
     },
@@ -110,23 +110,23 @@
       "difficulty_tag": "user"
     },
     {
-      "prompt": "What does `ssh-copy-id ari@server` do?",
+      "prompt": "What does `ssh-copy-id usr@server` do?",
       "answer": "Installs your public key on the remote server.",
-      "example": "ssh-copy-id ari@server",
+      "example": "ssh-copy-id usr@server",
       "type": "flip",
       "difficulty_tag": "user"
     },
     {
-      "prompt": "What does `scp file.txt ari@server:/tmp/` do?",
+      "prompt": "What does `scp file.txt usr@server:/tmp/` do?",
       "answer": "Copies a file to a remote host over SSH.",
-      "example": "scp file.txt ari@server:/tmp/",
+      "example": "scp file.txt usr@server:/tmp/",
       "type": "flip",
       "difficulty_tag": "user"
     },
     {
       "prompt": "Which command syncs files efficiently over SSH?",
       "answer": "rsync -av",
-      "example": "rsync -av src/ ari@server:/backup/",
+      "example": "rsync -av src/ usr@server:/backup/",
       "type": "multiple_choice",
       "difficulty_tag": "admin"
     },

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linuxdojo/core/theme/app_typography.dart';
+import 'package:linuxdojo/core/widgets/linuxdojo_app_bar.dart';
 import 'package:linuxdojo/features/notifications/data/reminder_service.dart';
 import 'package:linuxdojo/features/settings/data/notification_permission_service.dart';
 import 'package:linuxdojo/features/settings/data/settings_repository.dart';
@@ -20,7 +21,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final settings = ref.watch(appSettingsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: const LinuxDojoAppBar(
+        title: 'Settings',
+        icon: Icons.settings_outlined,
+      ),
       body: SafeArea(
         child: settings.when(
           data: (settings) => ListView(
@@ -169,6 +173,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
             FilledButton(
               style: FilledButton.styleFrom(
+                minimumSize: const Size(64, 52),
                 backgroundColor: theme.colorScheme.error,
                 foregroundColor: theme.colorScheme.onError,
               ),

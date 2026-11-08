@@ -5,6 +5,7 @@ import 'package:linuxdojo/app/app.dart';
 import 'package:linuxdojo/core/database/app_database.dart';
 import 'package:linuxdojo/core/database/database_provider.dart';
 import 'package:linuxdojo/core/database/seed/database_seeder.dart';
+import 'package:linuxdojo/core/widgets/linuxdojo_logo.dart';
 import 'package:linuxdojo/features/notifications/data/local_reminder_scheduler.dart';
 import 'package:linuxdojo/features/settings/data/notification_permission_service.dart';
 import 'package:linuxdojo/features/settings/data/settings_repository.dart';
@@ -48,6 +49,13 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    expect(
+      find.descendant(
+        of: find.byType(AppBar),
+        matching: find.byType(LinuxDojoLogo),
+      ),
+      findsOneWidget,
+    );
     expect(find.text('Choose your level'), findsOneWidget);
     expect(find.text('Step 1 of 4'), findsOneWidget);
 

@@ -1,13 +1,16 @@
 import 'dart:math';
 
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:linuxdojo/core/database/app_database.dart';
 import 'package:linuxdojo/core/database/database_provider.dart';
 import 'package:linuxdojo/core/database/seed/database_seeder.dart';
 import 'package:linuxdojo/core/models/card_type.dart';
+import 'package:linuxdojo/core/models/difficulty_tag.dart';
 import 'package:linuxdojo/features/settings/data/settings_repository.dart';
 import 'package:linuxdojo/features/stats/data/achievement_repository.dart';
+import 'package:linuxdojo/features/stats/data/stats_repository.dart';
 import 'package:linuxdojo/features/study/data/review_repository.dart';
 import 'package:linuxdojo/features/study/data/session_repository.dart';
 import 'package:linuxdojo/features/study/domain/review_grade.dart';
@@ -284,4 +287,74 @@ void main() {
     expect(summary!.dailyGoal, 8);
     expect(summary.dailyGoalMet, isTrue);
   });
+
+  test('persists progress after each grade so Home and Stats update', () async {
+    await SettingsRepository(database).setDailyGoal(1);
+    await container.read(studySessionProvider.future);
+    final notifier = container.read(studySessionProvider.notifier);
+
+    notifier.reveal();
+    await notifier.grade(ReviewGrade.good);
+
+    final sessions = await SessionRepository(database).getSessions();
+    expect(sessions, hasLength(1));
+    expect(sessions.single.cardsReviewed, 1);
+    expect(sessions.single.correctAnswers, 1);
+
+    final stats = await StatsRepository(
+      database,
+      SettingsRepository(database),
+      () => now,
+    ).getUserStats();
+    expect(stats.cardsReviewedToday, 1);
+    expect(stats.dailyGoalMet, isTrue);
+    expect(stats.currentStreak, 1);
+  });
+
+  test('limits a session to the default daily goal of 10 cards', () async {
+    await _insertDueCards(database, now, 6);
+    container.invalidate(studySessionProvider);
+
+    final state = await container.read(studySessionProvider.future);
+
+    expect(state.cards, hasLength(10));
+    expect(state.total, 10);
+  });
+
+  test('limits a session to 20 cards when the daily goal is 20', () async {
+    await SettingsRepository(database).setDailyGoal(20);
+    await _insertDueCards(database, now, 12);
+    container.invalidate(studySessionProvider);
+
+    final state = await container.read(studySessionProvider.future);
+
+    expect(state.cards, hasLength(20));
+    expect(state.total, 20);
+  });
+}
+
+Future<void> _insertDueCards(
+  AppDatabase database,
+  DateTime now,
+  int count,
+) async {
+  for (var index = 0; index < count; index++) {
+    final cardId = await database
+        .into(database.cards)
+        .insert(
+          CardsCompanion.insert(
+            deckId: 1,
+            prompt: 'Extra prompt $index',
+            answer: 'Extra answer $index',
+            example: 'extra-$index',
+            type: CardType.flip,
+            difficultyTag: DifficultyTag.novice,
+          ),
+        );
+    await database
+        .into(database.reviews)
+        .insert(
+          ReviewsCompanion.insert(cardId: Value(cardId), nextReview: now),
+        );
+  }
 }

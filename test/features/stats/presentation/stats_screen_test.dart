@@ -9,6 +9,7 @@ import 'package:linuxdojo/features/stats/data/achievement_repository.dart';
 import 'package:linuxdojo/features/stats/data/achievement_service.dart';
 import 'package:linuxdojo/features/stats/data/stats_repository.dart';
 import 'package:linuxdojo/features/stats/domain/achievement.dart';
+import 'package:linuxdojo/features/stats/presentation/achievements_screen.dart';
 import 'package:linuxdojo/features/stats/presentation/stats_screen.dart';
 import 'package:linuxdojo/features/study/data/session_repository.dart';
 
@@ -60,7 +61,20 @@ void main() {
     await tester.scrollUntilVisible(find.text('Achievements'), 200);
     await tester.pumpAndSettle();
 
-    expect(find.text('3 / ${achievementDefinitions.length}'), findsOneWidget);
+    expect(
+      find.text('3 of ${achievementDefinitions.length} unlocked'),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.text('Achievements'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(AchievementsScreen), findsOneWidget);
+    expect(
+      find.text('3 of ${achievementDefinitions.length} unlocked'),
+      findsOneWidget,
+    );
+    expect(find.text('Hello, World'), findsOneWidget);
 
     await tester.pumpWidget(const SizedBox());
     await tester.pump();

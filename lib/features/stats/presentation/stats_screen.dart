@@ -4,11 +4,13 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linuxdojo/core/theme/app_colors.dart';
+import 'package:linuxdojo/core/widgets/linuxdojo_app_bar.dart';
 import 'package:linuxdojo/features/stats/data/achievement_service.dart';
 import 'package:linuxdojo/features/stats/data/stats_repository.dart';
 import 'package:linuxdojo/features/stats/domain/achievement.dart';
 import 'package:linuxdojo/features/stats/domain/user_stats.dart';
 import 'package:linuxdojo/features/stats/domain/weekly_stats.dart';
+import 'package:linuxdojo/features/stats/presentation/achievements_screen.dart';
 import 'package:linuxdojo/features/study/presentation/study_session_provider.dart';
 
 class StatsScreen extends ConsumerWidget {
@@ -22,7 +24,10 @@ class StatsScreen extends ConsumerWidget {
     final dueCards = ref.watch(dueCardsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Stats')),
+      appBar: const LinuxDojoAppBar(
+        title: 'Stats',
+        icon: Icons.insights_outlined,
+      ),
       body: SafeArea(
         child: stats.when(
           data: (stats) => ListView(
@@ -62,7 +67,14 @@ class StatsScreen extends ConsumerWidget {
               const SizedBox(height: 12),
               _WeeklyChartCard(weekly: weekly),
               const SizedBox(height: 24),
-              _AchievementsSection(achievements: achievements),
+              _AchievementsLink(
+                achievements: achievements,
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const AchievementsScreen(),
+                  ),
+                ),
+              ),
             ],
           ),
           loading: () => const Center(child: CircularProgressIndicator()),
@@ -406,153 +418,88 @@ class _WeeklyBarChart extends StatelessWidget {
   }
 }
 
-class _AchievementsSection extends StatelessWidget {
-  const _AchievementsSection({required this.achievements});
+class _AchievementsLink extends StatelessWidget {
+  const _AchievementsLink({required this.achievements, required this.onTap});
 
   final AsyncValue<List<AchievementStatus>> achievements;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final unlocked = achievements.value
+        ?.where((item) => item.isUnlocked)
+        .length;
+    final total = achievements.value?.length ?? achievementDefinitions.length;
+    final progress = total == 0 ? 0.0 : (unlocked ?? 0) / total;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        achievements.when(
-          data: (items) {
-            final unlocked = items.where((item) => item.isUnlocked).length;
-            return Row(
-              children: [
-                Text(
-                  'Achievements',
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const Spacer(),
-                Text(
-                  '$unlocked / ${items.length}',
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            );
-          },
-          loading: () => Text(
-            'Achievements',
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+    return Material(
+      color: theme.colorScheme.surface,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: theme.colorScheme.outline),
           ),
-          error: (error, stackTrace) => Text(
-            'Achievements',
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-        const SizedBox(height: 12),
-        achievements.when(
-          data: (items) => GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
-              childAspectRatio: 1.2,
-            ),
-            itemCount: items.length,
-            itemBuilder: (context, index) =>
-                _AchievementTile(status: items[index]),
-          ),
-          loading: () => const Padding(
-            padding: EdgeInsets.symmetric(vertical: 24),
-            child: Center(child: CircularProgressIndicator()),
-          ),
-          error: (error, stackTrace) => Text(
-            'Could not load achievements.',
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _AchievementTile extends StatelessWidget {
-  const _AchievementTile({required this.status});
-
-  final AchievementStatus status;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final unlocked = status.isUnlocked;
-
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: unlocked
-            ? theme.colorScheme.primaryContainer
-            : theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: unlocked
-              ? theme.colorScheme.primary
-              : theme.colorScheme.outline,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+          child: Row(
             children: [
-              Icon(
-                unlocked
-                    ? _achievementIcon(status.definition.category)
-                    : Icons.lock_outline,
-                size: 22,
-                color: unlocked
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.onSurfaceVariant,
-              ),
-              const Spacer(),
-              if (unlocked)
-                Icon(
-                  Icons.check_circle,
-                  size: 16,
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  Icons.emoji_events_outlined,
                   color: theme.colorScheme.primary,
                 ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Achievements',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      unlocked == null
+                          ? 'Loading progress…'
+                          : '$unlocked of $total unlocked',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: LinearProgressIndicator(
+                        value: progress,
+                        minHeight: 5,
+                        backgroundColor:
+                            theme.colorScheme.surfaceContainerHighest,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 10),
+              Icon(
+                Icons.chevron_right,
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
             ],
           ),
-          const Spacer(),
-          Text(
-            status.definition.title,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: unlocked
-                  ? theme.colorScheme.onPrimaryContainer
-                  : theme.colorScheme.onSurface,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            status.definition.description,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: unlocked
-                  ? theme.colorScheme.onPrimaryContainer.withValues(alpha: 0.8)
-                  : theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -589,18 +536,6 @@ class _StatsError extends StatelessWidget {
       ),
     );
   }
-}
-
-IconData _achievementIcon(AchievementCategory category) {
-  return switch (category) {
-    AchievementCategory.sessions => Icons.event_available,
-    AchievementCategory.cards => Icons.style_outlined,
-    AchievementCategory.accuracy => Icons.gps_fixed,
-    AchievementCategory.streak => Icons.local_fire_department,
-    AchievementCategory.goals => Icons.flag_outlined,
-    AchievementCategory.mastery => Icons.school_outlined,
-    AchievementCategory.multipleChoice => Icons.checklist,
-  };
 }
 
 String _weekdayLabel(DateTime date) {

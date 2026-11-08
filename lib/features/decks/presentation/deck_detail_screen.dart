@@ -4,6 +4,7 @@ import 'package:linuxdojo/core/database/app_database.dart';
 import 'package:linuxdojo/core/models/difficulty_tag.dart';
 import 'package:linuxdojo/core/theme/app_colors.dart';
 import 'package:linuxdojo/core/theme/app_typography.dart';
+import 'package:linuxdojo/core/widgets/linuxdojo_app_bar.dart';
 import 'package:linuxdojo/features/decks/data/deck_repository.dart';
 import 'package:linuxdojo/features/decks/domain/deck_summary.dart';
 
@@ -19,7 +20,7 @@ class DeckDetailScreen extends ConsumerWidget {
     final deckName = summary.value?.deck.name ?? 'Deck';
 
     return Scaffold(
-      appBar: AppBar(title: Text(deckName)),
+      appBar: LinuxDojoAppBar(title: deckName),
       body: SafeArea(
         child: cards.when(
           loading: () => const Center(child: CircularProgressIndicator()),
@@ -192,6 +193,7 @@ class _DifficultyBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final (label, color) = switch (tag) {
       DifficultyTag.novice => ('Novice', AppColors.primary),
       DifficultyTag.user => ('User', AppColors.secondary),
@@ -208,7 +210,7 @@ class _DifficultyBadge extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: TextStyle(
+        style: theme.textTheme.labelSmall?.copyWith(
           fontSize: 11,
           fontWeight: FontWeight.w700,
           letterSpacing: 0.4,

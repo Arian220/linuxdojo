@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linuxdojo/core/theme/app_colors.dart';
-import 'package:linuxdojo/core/theme/app_typography.dart';
+import 'package:linuxdojo/core/widgets/linuxdojo_app_bar.dart';
+import 'package:linuxdojo/core/widgets/linuxdojo_logo.dart';
+import 'package:linuxdojo/features/settings/data/settings_repository.dart';
 import 'package:linuxdojo/features/stats/data/stats_repository.dart';
 import 'package:linuxdojo/features/stats/domain/user_stats.dart';
 import 'package:linuxdojo/features/study/presentation/study_screen.dart';
@@ -18,7 +20,10 @@ class HomeScreen extends ConsumerWidget {
     final hasDueCards = dueCards.value?.isNotEmpty ?? false;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('LinuxDojo')),
+      appBar: const LinuxDojoAppBar(
+        title: 'LinuxDojo',
+        iconWidget: LinuxDojoLogo(size: 30),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
@@ -31,12 +36,8 @@ class HomeScreen extends ConsumerWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
-                          Icons.terminal,
-                          size: 56,
-                          color: theme.colorScheme.primary,
-                        ),
-                        const SizedBox(height: 24),
+                        const LinuxDojoLogo(size: 95),
+                        const SizedBox(height: 5),
                         Text(
                           'Ready to practice?',
                           textAlign: TextAlign.center,
@@ -59,8 +60,12 @@ class HomeScreen extends ConsumerWidget {
                         ],
                         const SizedBox(height: 32),
                         dueCards.when(
-                          data: (cards) =>
-                              _DueCardsSummary(count: cards.length),
+                          data: (cards) => _DueCardsSummary(
+                            count: cards.length,
+                            sessionSize:
+                                userStats.value?.dailyGoal ??
+                                SettingsRepository.defaultDailyGoal,
+                          ),
                           loading: () => const SizedBox(
                             height: 96,
                             child: Center(child: CircularProgressIndicator()),
@@ -86,13 +91,6 @@ class HomeScreen extends ConsumerWidget {
                 label: const Text('Study'),
               ),
               const SizedBox(height: 12),
-              Text(
-                r'$ linuxdojo --study',
-                textAlign: TextAlign.center,
-                style: AppTypography.command.copyWith(
-                  color: theme.colorScheme.secondary,
-                ),
-              ),
             ],
           ),
         ),
@@ -166,9 +164,10 @@ class _DailyProgressCard extends StatelessWidget {
 }
 
 class _DueCardsSummary extends StatelessWidget {
-  const _DueCardsSummary({required this.count});
+  const _DueCardsSummary({required this.count, required this.sessionSize});
 
   final int count;
+  final int sessionSize;
 
   @override
   Widget build(BuildContext context) {

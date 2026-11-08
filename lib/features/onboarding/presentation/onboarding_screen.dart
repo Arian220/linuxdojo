@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:linuxdojo/core/widgets/linuxdojo_app_bar.dart';
+import 'package:linuxdojo/core/widgets/linuxdojo_logo.dart';
 import 'package:linuxdojo/features/notifications/data/reminder_service.dart';
 import 'package:linuxdojo/features/settings/data/notification_permission_service.dart';
 import 'package:linuxdojo/features/settings/data/settings_repository.dart';
@@ -78,9 +80,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: LinuxDojoAppBar(
+        title: 'LinuxDojo',
+        iconWidget: const LinuxDojoLogo(size: 30),
         automaticallyImplyLeading: false,
-        title: const Text('LinuxDojo'),
         actions: [
           Center(
             child: Padding(

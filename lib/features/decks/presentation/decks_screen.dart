@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linuxdojo/core/widgets/feature_placeholder.dart';
+import 'package:linuxdojo/core/widgets/linuxdojo_app_bar.dart';
 import 'package:linuxdojo/features/decks/data/deck_repository.dart';
 import 'package:linuxdojo/features/decks/domain/deck_summary.dart';
 import 'package:linuxdojo/features/decks/presentation/deck_detail_screen.dart';
@@ -13,7 +14,10 @@ class DecksScreen extends ConsumerWidget {
     final decks = ref.watch(deckSummariesProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Decks')),
+      appBar: const LinuxDojoAppBar(
+        title: 'Decks',
+        icon: Icons.layers_outlined,
+      ),
       body: SafeArea(
         child: decks.when(
           loading: () => const Center(child: CircularProgressIndicator()),

@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:linuxdojo/app/app.dart';
+import 'package:linuxdojo/app/app_startup_provider.dart';
 import 'package:linuxdojo/core/database/app_database.dart';
 import 'package:linuxdojo/core/database/database_provider.dart';
+import 'package:linuxdojo/core/widgets/linuxdojo_logo.dart';
 import 'package:linuxdojo/features/settings/data/settings_repository.dart';
 
 import '../helpers/test_database.dart';
@@ -20,12 +24,31 @@ void main() {
     await database.close();
   });
 
-  Widget buildApp() {
+  Widget buildApp({Future<void>? startup}) {
     return ProviderScope(
-      overrides: [appDatabaseProvider.overrideWithValue(database)],
+      overrides: [
+        appDatabaseProvider.overrideWithValue(database),
+        appStartupProvider.overrideWith((ref) => startup ?? Future.value()),
+      ],
       child: const LinuxDojoApp(),
     );
   }
+
+  testWidgets('shows AppGate loading while startup is pending', (tester) async {
+    final startup = Completer<void>();
+    await tester.pumpWidget(buildApp(startup: startup.future));
+    await tester.pump();
+
+    expect(find.byType(LinuxDojoLogo), findsOneWidget);
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+    startup.complete();
+    await tester.pumpAndSettle();
+    expect(find.byType(NavigationBar), findsOneWidget);
+
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump();
+  });
 
   testWidgets('starts on Home with the dark theme', (tester) async {
     await tester.pumpWidget(buildApp());

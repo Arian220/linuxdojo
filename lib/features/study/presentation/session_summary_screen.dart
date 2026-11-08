@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linuxdojo/core/theme/app_colors.dart';
+import 'package:linuxdojo/core/widgets/linuxdojo_app_bar.dart';
 import 'package:linuxdojo/features/study/presentation/study_session_state.dart';
 
 class SessionSummaryScreen extends StatelessWidget {
@@ -12,9 +13,10 @@ class SessionSummaryScreen extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: const LinuxDojoAppBar(
+        title: 'Summary',
+        icon: Icons.check_circle_outline,
         automaticallyImplyLeading: false,
-        title: const Text('Summary'),
       ),
       body: SafeArea(
         child: Padding(

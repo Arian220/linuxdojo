@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:linuxdojo/core/theme/app_colors.dart';
 
 abstract final class AppTheme {
@@ -17,6 +18,12 @@ abstract final class AppTheme {
       onError: AppColors.onError,
       surface: AppColors.surface,
       onSurface: AppColors.onSurface,
+      surfaceDim: AppColors.surfaceDim,
+      surfaceBright: AppColors.surfaceBright,
+      surfaceContainerLowest: AppColors.surfaceContainerLowest,
+      surfaceContainerLow: AppColors.surfaceContainerLow,
+      surfaceContainer: AppColors.surfaceContainer,
+      surfaceContainerHigh: AppColors.surfaceContainerHigh,
       surfaceContainerHighest: AppColors.surfaceContainerHighest,
       onSurfaceVariant: AppColors.onSurfaceVariant,
       outline: AppColors.outline,
@@ -36,12 +43,18 @@ abstract final class AppTheme {
     );
 
     return base.copyWith(
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.transparent,
+      appBarTheme: AppBarTheme(
+        backgroundColor: AppColors.background,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
+        scrolledUnderElevation: 0,
         centerTitle: false,
         foregroundColor: AppColors.onSurface,
+        systemOverlayStyle: SystemUiOverlayStyle.light,
+        titleTextStyle: base.textTheme.titleLarge?.copyWith(
+          color: AppColors.onSurface,
+          fontWeight: FontWeight.w600,
+        ),
       ),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: AppColors.surface,
@@ -51,7 +64,7 @@ abstract final class AppTheme {
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           final selected = states.contains(WidgetState.selected);
-          return TextStyle(
+          return base.textTheme.labelMedium?.copyWith(
             fontSize: 12,
             fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
             color: selected ? AppColors.primary : AppColors.onSurfaceVariant,
@@ -71,13 +84,53 @@ abstract final class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          textStyle: base.textTheme.labelLarge?.copyWith(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
       dividerTheme: const DividerThemeData(
         color: AppColors.outline,
         thickness: 1,
         space: 1,
+      ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: AppColors.surfaceContainer,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: AppColors.surfaceContainerHigh,
+        contentTextStyle: base.textTheme.bodyMedium?.copyWith(
+          color: AppColors.onSurface,
+        ),
+        behavior: SnackBarBehavior.floating,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+        ),
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          return states.contains(WidgetState.selected)
+              ? AppColors.onPrimary
+              : AppColors.onSurfaceVariant;
+        }),
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          return states.contains(WidgetState.selected)
+              ? AppColors.primary
+              : AppColors.surfaceContainerHighest;
+        }),
+        trackOutlineColor: WidgetStateProperty.resolveWith((states) {
+          return states.contains(WidgetState.selected)
+              ? AppColors.primary
+              : AppColors.outline;
+        }),
+      ),
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+        color: AppColors.primary,
+        linearTrackColor: AppColors.surfaceContainerHighest,
+        circularTrackColor: AppColors.surfaceContainerHighest,
       ),
       textTheme: base.textTheme.apply(
         bodyColor: AppColors.onSurface,

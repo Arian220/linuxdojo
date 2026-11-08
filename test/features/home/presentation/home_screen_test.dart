@@ -5,6 +5,7 @@ import 'package:linuxdojo/core/database/app_database.dart';
 import 'package:linuxdojo/core/database/database_provider.dart';
 import 'package:linuxdojo/core/database/seed/database_seeder.dart';
 import 'package:linuxdojo/core/theme/app_theme.dart';
+import 'package:linuxdojo/core/widgets/linuxdojo_logo.dart';
 import 'package:linuxdojo/features/home/presentation/home_screen.dart';
 import 'package:linuxdojo/features/study/presentation/study_screen.dart';
 
@@ -34,6 +35,13 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    expect(
+      find.descendant(
+        of: find.byType(AppBar),
+        matching: find.byType(LinuxDojoLogo),
+      ),
+      findsOneWidget,
+    );
     expect(find.text('8'), findsOneWidget);
     expect(find.text('cards due'), findsOneWidget);
     expect(find.text('0 day streak'), findsOneWidget);
