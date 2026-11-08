@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:linuxdojo/core/theme/app_colors.dart';
 import 'package:linuxdojo/core/theme/app_typography.dart';
+import 'package:linuxdojo/features/stats/data/stats_repository.dart';
+import 'package:linuxdojo/features/stats/domain/user_stats.dart';
 import 'package:linuxdojo/features/study/presentation/study_screen.dart';
 import 'package:linuxdojo/features/study/presentation/study_session_provider.dart';
 
@@ -11,6 +14,7 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final dueCards = ref.watch(dueCardsProvider);
+    final userStats = ref.watch(userStatsProvider);
     final hasDueCards = dueCards.value?.isNotEmpty ?? false;
 
     return Scaffold(
@@ -49,6 +53,10 @@ class HomeScreen extends ConsumerWidget {
                             height: 1.5,
                           ),
                         ),
+                        if (userStats.hasValue) ...[
+                          const SizedBox(height: 24),
+                          _DailyProgressCard(stats: userStats.requireValue),
+                        ],
                         const SizedBox(height: 32),
                         dueCards.when(
                           data: (cards) =>
@@ -88,6 +96,70 @@ class HomeScreen extends ConsumerWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _DailyProgressCard extends StatelessWidget {
+  const _DailyProgressCard({required this.stats});
+
+  final UserStats stats;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: theme.colorScheme.outline),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.local_fire_department,
+                size: 22,
+                color: stats.currentStreak > 0
+                    ? AppColors.warning
+                    : theme.colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                '${stats.currentStreak} day streak',
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const Spacer(),
+              Text(
+                '${stats.cardsReviewedToday} / ${stats.dailyGoal}',
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: stats.dailyGoalMet
+                      ? AppColors.success
+                      : theme.colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: LinearProgressIndicator(
+              value: stats.dailyGoalProgress,
+              minHeight: 6,
+              backgroundColor: theme.colorScheme.surfaceContainerHighest,
+              color: stats.dailyGoalMet
+                  ? AppColors.success
+                  : theme.colorScheme.primary,
+            ),
+          ),
+        ],
       ),
     );
   }

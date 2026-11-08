@@ -13,6 +13,9 @@ class SessionRepository {
     required DateTime endedAt,
     required int cardsReviewed,
     required int correctAnswers,
+    int multipleChoiceAnswered = 0,
+    int multipleChoiceCorrect = 0,
+    int bestMultipleChoiceStreak = 0,
   }) {
     return _database
         .into(_database.sessionLogs)
@@ -22,6 +25,9 @@ class SessionRepository {
             endedAt: endedAt,
             cardsReviewed: Value(cardsReviewed),
             correctAnswers: Value(correctAnswers),
+            multipleChoiceAnswered: Value(multipleChoiceAnswered),
+            multipleChoiceCorrect: Value(multipleChoiceCorrect),
+            bestMultipleChoiceStreak: Value(bestMultipleChoiceStreak),
           ),
         );
   }
@@ -37,6 +43,18 @@ class SessionRepository {
     final query = _database.select(_database.sessionLogs)
       ..orderBy([(session) => OrderingTerm.desc(session.startedAt)])
       ..limit(limit);
+    return query.watch();
+  }
+
+  Future<List<SessionLog>> getAllSessions() {
+    final query = _database.select(_database.sessionLogs)
+      ..orderBy([(session) => OrderingTerm.asc(session.startedAt)]);
+    return query.get();
+  }
+
+  Stream<List<SessionLog>> watchAllSessions() {
+    final query = _database.select(_database.sessionLogs)
+      ..orderBy([(session) => OrderingTerm.asc(session.startedAt)]);
     return query.watch();
   }
 

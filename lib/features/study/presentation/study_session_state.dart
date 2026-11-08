@@ -8,6 +8,10 @@ class StudySessionState {
     required this.startedAt,
     required this.reviewedCount,
     required this.correctCount,
+    required this.multipleChoiceAnswered,
+    required this.multipleChoiceCorrect,
+    required this.currentMultipleChoiceStreak,
+    required this.bestMultipleChoiceStreak,
     required this.isGrading,
     this.selectedOption,
     this.finishedAt,
@@ -20,6 +24,10 @@ class StudySessionState {
   final DateTime startedAt;
   final int reviewedCount;
   final int correctCount;
+  final int multipleChoiceAnswered;
+  final int multipleChoiceCorrect;
+  final int currentMultipleChoiceStreak;
+  final int bestMultipleChoiceStreak;
   final bool isGrading;
   final String? selectedOption;
   final DateTime? finishedAt;
@@ -41,6 +49,10 @@ class StudySessionState {
     bool? isRevealed,
     int? reviewedCount,
     int? correctCount,
+    int? multipleChoiceAnswered,
+    int? multipleChoiceCorrect,
+    int? currentMultipleChoiceStreak,
+    int? bestMultipleChoiceStreak,
     bool? isGrading,
     String? selectedOption,
     bool clearSelection = false,
@@ -54,6 +66,14 @@ class StudySessionState {
       startedAt: startedAt,
       reviewedCount: reviewedCount ?? this.reviewedCount,
       correctCount: correctCount ?? this.correctCount,
+      multipleChoiceAnswered:
+          multipleChoiceAnswered ?? this.multipleChoiceAnswered,
+      multipleChoiceCorrect:
+          multipleChoiceCorrect ?? this.multipleChoiceCorrect,
+      currentMultipleChoiceStreak:
+          currentMultipleChoiceStreak ?? this.currentMultipleChoiceStreak,
+      bestMultipleChoiceStreak:
+          bestMultipleChoiceStreak ?? this.bestMultipleChoiceStreak,
       isGrading: isGrading ?? this.isGrading,
       selectedOption: clearSelection
           ? null

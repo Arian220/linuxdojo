@@ -1281,6 +1281,40 @@ class $SessionLogsTable extends SessionLogs
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _multipleChoiceAnsweredMeta =
+      const VerificationMeta('multipleChoiceAnswered');
+  @override
+  late final GeneratedColumn<int> multipleChoiceAnswered = GeneratedColumn<int>(
+    'multiple_choice_answered',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _multipleChoiceCorrectMeta =
+      const VerificationMeta('multipleChoiceCorrect');
+  @override
+  late final GeneratedColumn<int> multipleChoiceCorrect = GeneratedColumn<int>(
+    'multiple_choice_correct',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _bestMultipleChoiceStreakMeta =
+      const VerificationMeta('bestMultipleChoiceStreak');
+  @override
+  late final GeneratedColumn<int> bestMultipleChoiceStreak =
+      GeneratedColumn<int>(
+        'best_multiple_choice_streak',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(0),
+      );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -1288,6 +1322,9 @@ class $SessionLogsTable extends SessionLogs
     endedAt,
     cardsReviewed,
     correctAnswers,
+    multipleChoiceAnswered,
+    multipleChoiceCorrect,
+    bestMultipleChoiceStreak,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1338,6 +1375,33 @@ class $SessionLogsTable extends SessionLogs
         ),
       );
     }
+    if (data.containsKey('multiple_choice_answered')) {
+      context.handle(
+        _multipleChoiceAnsweredMeta,
+        multipleChoiceAnswered.isAcceptableOrUnknown(
+          data['multiple_choice_answered']!,
+          _multipleChoiceAnsweredMeta,
+        ),
+      );
+    }
+    if (data.containsKey('multiple_choice_correct')) {
+      context.handle(
+        _multipleChoiceCorrectMeta,
+        multipleChoiceCorrect.isAcceptableOrUnknown(
+          data['multiple_choice_correct']!,
+          _multipleChoiceCorrectMeta,
+        ),
+      );
+    }
+    if (data.containsKey('best_multiple_choice_streak')) {
+      context.handle(
+        _bestMultipleChoiceStreakMeta,
+        bestMultipleChoiceStreak.isAcceptableOrUnknown(
+          data['best_multiple_choice_streak']!,
+          _bestMultipleChoiceStreakMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -1367,6 +1431,18 @@ class $SessionLogsTable extends SessionLogs
         DriftSqlType.int,
         data['${effectivePrefix}correct_answers'],
       )!,
+      multipleChoiceAnswered: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}multiple_choice_answered'],
+      )!,
+      multipleChoiceCorrect: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}multiple_choice_correct'],
+      )!,
+      bestMultipleChoiceStreak: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}best_multiple_choice_streak'],
+      )!,
     );
   }
 
@@ -1382,12 +1458,18 @@ class SessionLog extends DataClass implements Insertable<SessionLog> {
   final DateTime endedAt;
   final int cardsReviewed;
   final int correctAnswers;
+  final int multipleChoiceAnswered;
+  final int multipleChoiceCorrect;
+  final int bestMultipleChoiceStreak;
   const SessionLog({
     required this.id,
     required this.startedAt,
     required this.endedAt,
     required this.cardsReviewed,
     required this.correctAnswers,
+    required this.multipleChoiceAnswered,
+    required this.multipleChoiceCorrect,
+    required this.bestMultipleChoiceStreak,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1397,6 +1479,11 @@ class SessionLog extends DataClass implements Insertable<SessionLog> {
     map['ended_at'] = Variable<DateTime>(endedAt);
     map['cards_reviewed'] = Variable<int>(cardsReviewed);
     map['correct_answers'] = Variable<int>(correctAnswers);
+    map['multiple_choice_answered'] = Variable<int>(multipleChoiceAnswered);
+    map['multiple_choice_correct'] = Variable<int>(multipleChoiceCorrect);
+    map['best_multiple_choice_streak'] = Variable<int>(
+      bestMultipleChoiceStreak,
+    );
     return map;
   }
 
@@ -1407,6 +1494,9 @@ class SessionLog extends DataClass implements Insertable<SessionLog> {
       endedAt: Value(endedAt),
       cardsReviewed: Value(cardsReviewed),
       correctAnswers: Value(correctAnswers),
+      multipleChoiceAnswered: Value(multipleChoiceAnswered),
+      multipleChoiceCorrect: Value(multipleChoiceCorrect),
+      bestMultipleChoiceStreak: Value(bestMultipleChoiceStreak),
     );
   }
 
@@ -1421,6 +1511,15 @@ class SessionLog extends DataClass implements Insertable<SessionLog> {
       endedAt: serializer.fromJson<DateTime>(json['endedAt']),
       cardsReviewed: serializer.fromJson<int>(json['cardsReviewed']),
       correctAnswers: serializer.fromJson<int>(json['correctAnswers']),
+      multipleChoiceAnswered: serializer.fromJson<int>(
+        json['multipleChoiceAnswered'],
+      ),
+      multipleChoiceCorrect: serializer.fromJson<int>(
+        json['multipleChoiceCorrect'],
+      ),
+      bestMultipleChoiceStreak: serializer.fromJson<int>(
+        json['bestMultipleChoiceStreak'],
+      ),
     );
   }
   @override
@@ -1432,6 +1531,11 @@ class SessionLog extends DataClass implements Insertable<SessionLog> {
       'endedAt': serializer.toJson<DateTime>(endedAt),
       'cardsReviewed': serializer.toJson<int>(cardsReviewed),
       'correctAnswers': serializer.toJson<int>(correctAnswers),
+      'multipleChoiceAnswered': serializer.toJson<int>(multipleChoiceAnswered),
+      'multipleChoiceCorrect': serializer.toJson<int>(multipleChoiceCorrect),
+      'bestMultipleChoiceStreak': serializer.toJson<int>(
+        bestMultipleChoiceStreak,
+      ),
     };
   }
 
@@ -1441,12 +1545,20 @@ class SessionLog extends DataClass implements Insertable<SessionLog> {
     DateTime? endedAt,
     int? cardsReviewed,
     int? correctAnswers,
+    int? multipleChoiceAnswered,
+    int? multipleChoiceCorrect,
+    int? bestMultipleChoiceStreak,
   }) => SessionLog(
     id: id ?? this.id,
     startedAt: startedAt ?? this.startedAt,
     endedAt: endedAt ?? this.endedAt,
     cardsReviewed: cardsReviewed ?? this.cardsReviewed,
     correctAnswers: correctAnswers ?? this.correctAnswers,
+    multipleChoiceAnswered:
+        multipleChoiceAnswered ?? this.multipleChoiceAnswered,
+    multipleChoiceCorrect: multipleChoiceCorrect ?? this.multipleChoiceCorrect,
+    bestMultipleChoiceStreak:
+        bestMultipleChoiceStreak ?? this.bestMultipleChoiceStreak,
   );
   SessionLog copyWithCompanion(SessionLogsCompanion data) {
     return SessionLog(
@@ -1459,6 +1571,15 @@ class SessionLog extends DataClass implements Insertable<SessionLog> {
       correctAnswers: data.correctAnswers.present
           ? data.correctAnswers.value
           : this.correctAnswers,
+      multipleChoiceAnswered: data.multipleChoiceAnswered.present
+          ? data.multipleChoiceAnswered.value
+          : this.multipleChoiceAnswered,
+      multipleChoiceCorrect: data.multipleChoiceCorrect.present
+          ? data.multipleChoiceCorrect.value
+          : this.multipleChoiceCorrect,
+      bestMultipleChoiceStreak: data.bestMultipleChoiceStreak.present
+          ? data.bestMultipleChoiceStreak.value
+          : this.bestMultipleChoiceStreak,
     );
   }
 
@@ -1469,14 +1590,25 @@ class SessionLog extends DataClass implements Insertable<SessionLog> {
           ..write('startedAt: $startedAt, ')
           ..write('endedAt: $endedAt, ')
           ..write('cardsReviewed: $cardsReviewed, ')
-          ..write('correctAnswers: $correctAnswers')
+          ..write('correctAnswers: $correctAnswers, ')
+          ..write('multipleChoiceAnswered: $multipleChoiceAnswered, ')
+          ..write('multipleChoiceCorrect: $multipleChoiceCorrect, ')
+          ..write('bestMultipleChoiceStreak: $bestMultipleChoiceStreak')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, startedAt, endedAt, cardsReviewed, correctAnswers);
+  int get hashCode => Object.hash(
+    id,
+    startedAt,
+    endedAt,
+    cardsReviewed,
+    correctAnswers,
+    multipleChoiceAnswered,
+    multipleChoiceCorrect,
+    bestMultipleChoiceStreak,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1485,7 +1617,10 @@ class SessionLog extends DataClass implements Insertable<SessionLog> {
           other.startedAt == this.startedAt &&
           other.endedAt == this.endedAt &&
           other.cardsReviewed == this.cardsReviewed &&
-          other.correctAnswers == this.correctAnswers);
+          other.correctAnswers == this.correctAnswers &&
+          other.multipleChoiceAnswered == this.multipleChoiceAnswered &&
+          other.multipleChoiceCorrect == this.multipleChoiceCorrect &&
+          other.bestMultipleChoiceStreak == this.bestMultipleChoiceStreak);
 }
 
 class SessionLogsCompanion extends UpdateCompanion<SessionLog> {
@@ -1494,12 +1629,18 @@ class SessionLogsCompanion extends UpdateCompanion<SessionLog> {
   final Value<DateTime> endedAt;
   final Value<int> cardsReviewed;
   final Value<int> correctAnswers;
+  final Value<int> multipleChoiceAnswered;
+  final Value<int> multipleChoiceCorrect;
+  final Value<int> bestMultipleChoiceStreak;
   const SessionLogsCompanion({
     this.id = const Value.absent(),
     this.startedAt = const Value.absent(),
     this.endedAt = const Value.absent(),
     this.cardsReviewed = const Value.absent(),
     this.correctAnswers = const Value.absent(),
+    this.multipleChoiceAnswered = const Value.absent(),
+    this.multipleChoiceCorrect = const Value.absent(),
+    this.bestMultipleChoiceStreak = const Value.absent(),
   });
   SessionLogsCompanion.insert({
     this.id = const Value.absent(),
@@ -1507,6 +1648,9 @@ class SessionLogsCompanion extends UpdateCompanion<SessionLog> {
     required DateTime endedAt,
     this.cardsReviewed = const Value.absent(),
     this.correctAnswers = const Value.absent(),
+    this.multipleChoiceAnswered = const Value.absent(),
+    this.multipleChoiceCorrect = const Value.absent(),
+    this.bestMultipleChoiceStreak = const Value.absent(),
   }) : startedAt = Value(startedAt),
        endedAt = Value(endedAt);
   static Insertable<SessionLog> custom({
@@ -1515,6 +1659,9 @@ class SessionLogsCompanion extends UpdateCompanion<SessionLog> {
     Expression<DateTime>? endedAt,
     Expression<int>? cardsReviewed,
     Expression<int>? correctAnswers,
+    Expression<int>? multipleChoiceAnswered,
+    Expression<int>? multipleChoiceCorrect,
+    Expression<int>? bestMultipleChoiceStreak,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1522,6 +1669,12 @@ class SessionLogsCompanion extends UpdateCompanion<SessionLog> {
       if (endedAt != null) 'ended_at': endedAt,
       if (cardsReviewed != null) 'cards_reviewed': cardsReviewed,
       if (correctAnswers != null) 'correct_answers': correctAnswers,
+      if (multipleChoiceAnswered != null)
+        'multiple_choice_answered': multipleChoiceAnswered,
+      if (multipleChoiceCorrect != null)
+        'multiple_choice_correct': multipleChoiceCorrect,
+      if (bestMultipleChoiceStreak != null)
+        'best_multiple_choice_streak': bestMultipleChoiceStreak,
     });
   }
 
@@ -1531,6 +1684,9 @@ class SessionLogsCompanion extends UpdateCompanion<SessionLog> {
     Value<DateTime>? endedAt,
     Value<int>? cardsReviewed,
     Value<int>? correctAnswers,
+    Value<int>? multipleChoiceAnswered,
+    Value<int>? multipleChoiceCorrect,
+    Value<int>? bestMultipleChoiceStreak,
   }) {
     return SessionLogsCompanion(
       id: id ?? this.id,
@@ -1538,6 +1694,12 @@ class SessionLogsCompanion extends UpdateCompanion<SessionLog> {
       endedAt: endedAt ?? this.endedAt,
       cardsReviewed: cardsReviewed ?? this.cardsReviewed,
       correctAnswers: correctAnswers ?? this.correctAnswers,
+      multipleChoiceAnswered:
+          multipleChoiceAnswered ?? this.multipleChoiceAnswered,
+      multipleChoiceCorrect:
+          multipleChoiceCorrect ?? this.multipleChoiceCorrect,
+      bestMultipleChoiceStreak:
+          bestMultipleChoiceStreak ?? this.bestMultipleChoiceStreak,
     );
   }
 
@@ -1559,6 +1721,21 @@ class SessionLogsCompanion extends UpdateCompanion<SessionLog> {
     if (correctAnswers.present) {
       map['correct_answers'] = Variable<int>(correctAnswers.value);
     }
+    if (multipleChoiceAnswered.present) {
+      map['multiple_choice_answered'] = Variable<int>(
+        multipleChoiceAnswered.value,
+      );
+    }
+    if (multipleChoiceCorrect.present) {
+      map['multiple_choice_correct'] = Variable<int>(
+        multipleChoiceCorrect.value,
+      );
+    }
+    if (bestMultipleChoiceStreak.present) {
+      map['best_multiple_choice_streak'] = Variable<int>(
+        bestMultipleChoiceStreak.value,
+      );
+    }
     return map;
   }
 
@@ -1569,7 +1746,10 @@ class SessionLogsCompanion extends UpdateCompanion<SessionLog> {
           ..write('startedAt: $startedAt, ')
           ..write('endedAt: $endedAt, ')
           ..write('cardsReviewed: $cardsReviewed, ')
-          ..write('correctAnswers: $correctAnswers')
+          ..write('correctAnswers: $correctAnswers, ')
+          ..write('multipleChoiceAnswered: $multipleChoiceAnswered, ')
+          ..write('multipleChoiceCorrect: $multipleChoiceCorrect, ')
+          ..write('bestMultipleChoiceStreak: $bestMultipleChoiceStreak')
           ..write(')'))
         .toString();
   }
@@ -3120,6 +3300,9 @@ typedef $$SessionLogsTableCreateCompanionBuilder =
       required DateTime endedAt,
       Value<int> cardsReviewed,
       Value<int> correctAnswers,
+      Value<int> multipleChoiceAnswered,
+      Value<int> multipleChoiceCorrect,
+      Value<int> bestMultipleChoiceStreak,
     });
 typedef $$SessionLogsTableUpdateCompanionBuilder =
     SessionLogsCompanion Function({
@@ -3128,6 +3311,9 @@ typedef $$SessionLogsTableUpdateCompanionBuilder =
       Value<DateTime> endedAt,
       Value<int> cardsReviewed,
       Value<int> correctAnswers,
+      Value<int> multipleChoiceAnswered,
+      Value<int> multipleChoiceCorrect,
+      Value<int> bestMultipleChoiceStreak,
     });
 
 class $$SessionLogsTableFilterComposer
@@ -3161,6 +3347,21 @@ class $$SessionLogsTableFilterComposer
 
   ColumnFilters<int> get correctAnswers => $composableBuilder(
     column: $table.correctAnswers,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get multipleChoiceAnswered => $composableBuilder(
+    column: $table.multipleChoiceAnswered,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get multipleChoiceCorrect => $composableBuilder(
+    column: $table.multipleChoiceCorrect,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get bestMultipleChoiceStreak => $composableBuilder(
+    column: $table.bestMultipleChoiceStreak,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -3198,6 +3399,21 @@ class $$SessionLogsTableOrderingComposer
     column: $table.correctAnswers,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<int> get multipleChoiceAnswered => $composableBuilder(
+    column: $table.multipleChoiceAnswered,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get multipleChoiceCorrect => $composableBuilder(
+    column: $table.multipleChoiceCorrect,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get bestMultipleChoiceStreak => $composableBuilder(
+    column: $table.bestMultipleChoiceStreak,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$SessionLogsTableAnnotationComposer
@@ -3225,6 +3441,21 @@ class $$SessionLogsTableAnnotationComposer
 
   GeneratedColumn<int> get correctAnswers => $composableBuilder(
     column: $table.correctAnswers,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get multipleChoiceAnswered => $composableBuilder(
+    column: $table.multipleChoiceAnswered,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get multipleChoiceCorrect => $composableBuilder(
+    column: $table.multipleChoiceCorrect,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get bestMultipleChoiceStreak => $composableBuilder(
+    column: $table.bestMultipleChoiceStreak,
     builder: (column) => column,
   );
 }
@@ -3265,12 +3496,18 @@ class $$SessionLogsTableTableManager
                 Value<DateTime> endedAt = const Value.absent(),
                 Value<int> cardsReviewed = const Value.absent(),
                 Value<int> correctAnswers = const Value.absent(),
+                Value<int> multipleChoiceAnswered = const Value.absent(),
+                Value<int> multipleChoiceCorrect = const Value.absent(),
+                Value<int> bestMultipleChoiceStreak = const Value.absent(),
               }) => SessionLogsCompanion(
                 id: id,
                 startedAt: startedAt,
                 endedAt: endedAt,
                 cardsReviewed: cardsReviewed,
                 correctAnswers: correctAnswers,
+                multipleChoiceAnswered: multipleChoiceAnswered,
+                multipleChoiceCorrect: multipleChoiceCorrect,
+                bestMultipleChoiceStreak: bestMultipleChoiceStreak,
               ),
           createCompanionCallback:
               ({
@@ -3279,12 +3516,18 @@ class $$SessionLogsTableTableManager
                 required DateTime endedAt,
                 Value<int> cardsReviewed = const Value.absent(),
                 Value<int> correctAnswers = const Value.absent(),
+                Value<int> multipleChoiceAnswered = const Value.absent(),
+                Value<int> multipleChoiceCorrect = const Value.absent(),
+                Value<int> bestMultipleChoiceStreak = const Value.absent(),
               }) => SessionLogsCompanion.insert(
                 id: id,
                 startedAt: startedAt,
                 endedAt: endedAt,
                 cardsReviewed: cardsReviewed,
                 correctAnswers: correctAnswers,
+                multipleChoiceAnswered: multipleChoiceAnswered,
+                multipleChoiceCorrect: multipleChoiceCorrect,
+                bestMultipleChoiceStreak: bestMultipleChoiceStreak,
               ),
           withReferenceMapper: (p0) => p0
               .map(

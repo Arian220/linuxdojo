@@ -5,6 +5,7 @@ import 'package:linuxdojo/core/database/database_provider.dart';
 import 'package:linuxdojo/core/database/seed/database_seeder.dart';
 import 'package:linuxdojo/core/models/card_type.dart';
 import 'package:linuxdojo/features/settings/data/settings_repository.dart';
+import 'package:linuxdojo/features/stats/data/achievement_repository.dart';
 import 'package:linuxdojo/features/study/data/review_repository.dart';
 import 'package:linuxdojo/features/study/data/session_repository.dart';
 import 'package:linuxdojo/features/study/domain/review_grade.dart';
@@ -206,6 +207,13 @@ void main() {
     expect(sessions, hasLength(1));
     expect(sessions.single.cardsReviewed, 8);
     expect(sessions.single.correctAnswers, 8);
+    expect(sessions.single.multipleChoiceAnswered, 4);
+    expect(sessions.single.multipleChoiceCorrect, 4);
+    expect(sessions.single.bestMultipleChoiceStreak, 4);
+    expect(
+      await AchievementRepository(database).isUnlocked('first_session'),
+      isTrue,
+    );
   });
 
   test('marks the streak status met when the daily goal is reached', () async {

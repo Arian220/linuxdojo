@@ -2,12 +2,13 @@ import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linuxdojo/core/database/app_database.dart';
 import 'package:linuxdojo/core/database/database_provider.dart';
+import 'package:linuxdojo/core/models/review_thresholds.dart';
 import 'package:linuxdojo/features/decks/domain/deck_summary.dart';
 
 class DeckRepository {
   const DeckRepository(this._database);
 
-  static const masteredRepetitions = 3;
+  static const masteredRepetitions = ReviewThresholds.masteredRepetitions;
 
   final AppDatabase _database;
 

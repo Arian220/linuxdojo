@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linuxdojo/core/database/app_database.dart';
 import 'package:linuxdojo/core/models/card_type.dart';
 import 'package:linuxdojo/features/settings/data/settings_repository.dart';
+import 'package:linuxdojo/features/stats/data/achievement_service.dart';
 import 'package:linuxdojo/features/study/data/review_repository.dart';
 import 'package:linuxdojo/features/study/data/session_repository.dart';
 import 'package:linuxdojo/features/study/data/study_repository.dart';
@@ -67,6 +68,10 @@ class StudySessionNotifier extends AsyncNotifier<StudySessionState> {
       startedAt: _now(),
       reviewedCount: 0,
       correctCount: 0,
+      multipleChoiceAnswered: 0,
+      multipleChoiceCorrect: 0,
+      currentMultipleChoiceStreak: 0,
+      bestMultipleChoiceStreak: 0,
       isGrading: false,
     );
   }
@@ -152,9 +157,22 @@ class StudySessionNotifier extends AsyncNotifier<StudySessionState> {
           );
       if (!ref.mounted) return;
 
+      final isCorrect = grade != ReviewGrade.again;
+      final isMultipleChoice = studyCard.isMultipleChoice;
       final reviewedCount = current.reviewedCount + 1;
-      final correctCount =
-          current.correctCount + (grade == ReviewGrade.again ? 0 : 1);
+      final correctCount = current.correctCount + (isCorrect ? 1 : 0);
+      final multipleChoiceAnswered =
+          current.multipleChoiceAnswered + (isMultipleChoice ? 1 : 0);
+      final multipleChoiceCorrect =
+          current.multipleChoiceCorrect +
+          (isMultipleChoice && isCorrect ? 1 : 0);
+      final currentMultipleChoiceStreak = isMultipleChoice
+          ? (isCorrect ? current.currentMultipleChoiceStreak + 1 : 0)
+          : current.currentMultipleChoiceStreak;
+      final bestMultipleChoiceStreak = max(
+        current.bestMultipleChoiceStreak,
+        currentMultipleChoiceStreak,
+      );
       final nextIndex = current.currentIndex + 1;
       final isComplete = nextIndex >= current.cards.length;
 
@@ -169,7 +187,15 @@ class StudySessionNotifier extends AsyncNotifier<StudySessionState> {
           endedAt: reviewedAt,
           cardsReviewed: reviewedCount,
           correctAnswers: correctCount,
+          multipleChoiceAnswered: multipleChoiceAnswered,
+          multipleChoiceCorrect: multipleChoiceCorrect,
+          bestMultipleChoiceStreak: bestMultipleChoiceStreak,
         );
+        if (!ref.mounted) return;
+
+        try {
+          await ref.read(achievementServiceProvider).sync();
+        } catch (_) {}
         if (!ref.mounted) return;
 
         final dailyGoal = await ref
@@ -205,6 +231,10 @@ class StudySessionNotifier extends AsyncNotifier<StudySessionState> {
           clearSelection: true,
           reviewedCount: reviewedCount,
           correctCount: correctCount,
+          multipleChoiceAnswered: multipleChoiceAnswered,
+          multipleChoiceCorrect: multipleChoiceCorrect,
+          currentMultipleChoiceStreak: currentMultipleChoiceStreak,
+          bestMultipleChoiceStreak: bestMultipleChoiceStreak,
           isGrading: false,
           finishedAt: finishedAt,
           summary: summary,

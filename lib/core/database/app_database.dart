@@ -18,12 +18,28 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (migrator) async {
       await migrator.createAll();
+    },
+    onUpgrade: (migrator, from, to) async {
+      if (from < 2) {
+        await migrator.addColumn(
+          sessionLogs,
+          sessionLogs.multipleChoiceAnswered,
+        );
+        await migrator.addColumn(
+          sessionLogs,
+          sessionLogs.multipleChoiceCorrect,
+        );
+        await migrator.addColumn(
+          sessionLogs,
+          sessionLogs.bestMultipleChoiceStreak,
+        );
+      }
     },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');

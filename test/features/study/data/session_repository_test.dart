@@ -26,6 +26,9 @@ void main() {
       endedAt: endedAt,
       cardsReviewed: 20,
       correctAnswers: 16,
+      multipleChoiceAnswered: 8,
+      multipleChoiceCorrect: 6,
+      bestMultipleChoiceStreak: 4,
     );
 
     final sessions = await repository.getSessions();
@@ -34,6 +37,9 @@ void main() {
     expect(sessions.single.id, id);
     expect(sessions.single.cardsReviewed, 20);
     expect(sessions.single.correctAnswers, 16);
+    expect(sessions.single.multipleChoiceAnswered, 8);
+    expect(sessions.single.multipleChoiceCorrect, 6);
+    expect(sessions.single.bestMultipleChoiceStreak, 4);
   });
 
   test('filters sessions by start date', () async {

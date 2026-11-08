@@ -46,6 +46,12 @@ class SessionLogs extends Table {
   DateTimeColumn get endedAt => dateTime()();
   IntColumn get cardsReviewed => integer().withDefault(const Constant(0))();
   IntColumn get correctAnswers => integer().withDefault(const Constant(0))();
+  IntColumn get multipleChoiceAnswered =>
+      integer().withDefault(const Constant(0))();
+  IntColumn get multipleChoiceCorrect =>
+      integer().withDefault(const Constant(0))();
+  IntColumn get bestMultipleChoiceStreak =>
+      integer().withDefault(const Constant(0))();
 }
 
 @DataClassName('Achievement')

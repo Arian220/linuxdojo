@@ -35,6 +35,7 @@ void main() {
 
     expect(find.text('8'), findsOneWidget);
     expect(find.text('cards due'), findsOneWidget);
+    expect(find.text('0 day streak'), findsOneWidget);
 
     await tester.tap(find.widgetWithText(FilledButton, 'Study'));
     await tester.pumpAndSettle();
