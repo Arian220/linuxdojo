@@ -137,9 +137,38 @@ void main() {
     await tester.tap(find.byType(Switch));
     await tester.pumpAndSettle();
 
+    expect(find.text('Turn off reminders?'), findsOneWidget);
+    expect((await settings.getAppSettings()).remindersEnabled, isTrue);
+    expect(scheduler.cancelCalls, 0);
+
+    await tester.tap(find.text('Turn off'));
+    await tester.pumpAndSettle();
+
     expect((await settings.getAppSettings()).remindersEnabled, isFalse);
     expect(scheduler.cancelCalls, 1);
     expect(scheduler.scheduleCalls, 0);
+
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump();
+  });
+
+  testWidgets('keeps reminders enabled when disabling is canceled', (
+    tester,
+  ) async {
+    await settings.setRemindersEnabled(true);
+    final scheduler = FakeReminderScheduler();
+
+    await tester.pumpWidget(buildSettings(scheduler: scheduler));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byType(Switch));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+
+    expect((await settings.getAppSettings()).remindersEnabled, isTrue);
+    expect(scheduler.cancelCalls, 0);
+    expect(tester.widget<Switch>(find.byType(Switch)).value, isTrue);
 
     await tester.pumpWidget(const SizedBox());
     await tester.pump();
@@ -177,6 +206,7 @@ void main() {
         find.text('Notifications are blocked by the system.'),
         findsOneWidget,
       );
+      expect(tester.widget<Switch>(find.byType(Switch)).value, isFalse);
       await tester.tap(find.text('Open notification settings'));
       await tester.pumpAndSettle();
 

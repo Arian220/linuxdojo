@@ -263,6 +263,26 @@ class _ReminderTileState extends ConsumerState<_ReminderTile> {
 
   Future<void> _onChanged(bool enabled) async {
     if (!enabled) {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Turn off reminders?'),
+          content: const Text(
+            'You will no longer receive daily study reminders.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Turn off'),
+            ),
+          ],
+        ),
+      );
+      if (!mounted || confirmed != true) return;
       await _save(false);
       return;
     }
@@ -351,6 +371,8 @@ class _ReminderTileState extends ConsumerState<_ReminderTile> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final remindersActive =
+        widget.enabled && widget.permissionGranted != false;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
@@ -368,7 +390,7 @@ class _ReminderTileState extends ConsumerState<_ReminderTile> {
                 horizontal: 16,
                 vertical: 6,
               ),
-              value: widget.enabled,
+              value: remindersActive,
               onChanged: _busy ? null : _onChanged,
               secondary: _busy
                   ? const SizedBox(
