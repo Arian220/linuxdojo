@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:linuxdojo/app/app_gate.dart';
 import 'package:linuxdojo/core/theme/app_theme.dart';
-import 'package:linuxdojo/features/shell/presentation/app_shell.dart';
 
 class LinuxDojoApp extends StatelessWidget {
   const LinuxDojoApp({super.key});
@@ -13,7 +13,7 @@ class LinuxDojoApp extends StatelessWidget {
       theme: AppTheme.dark,
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.dark,
-      home: const AppShell(),
+      home: const AppGate(),
     );
   }
 }

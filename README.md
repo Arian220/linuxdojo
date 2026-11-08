@@ -13,13 +13,15 @@ accounts, no network calls, no tracking.
 
 ## Status
 
-Early development. Modules 0–6 are complete: project setup, theme, app shell,
+Early development. Modules 0–8 are complete: project setup, theme, app shell,
 drift schema, seeded deck content, repositories, the SM-2 scheduling engine,
 flip study sessions with animated cards and four grade buttons, multiple choice
 questions with same-deck distractors, immediate feedback, usage examples, and
 auto-grading, deck browsing with mastery progress and read-only card details,
-and gamification with daily streaks, 42 achievements, and a weekly activity
-chart. Onboarding and settings are next.
+gamification with daily streaks, 42 achievements, and a weekly activity chart,
+first-launch onboarding and persistent settings for level, daily goal, and
+reminders, plus smart daily notifications that learn from study times and are
+scheduled locally.
 
 ## Planned MVP
 
@@ -97,7 +99,9 @@ lib/
     ├── decks/               # Deck browsing + deck repository
     ├── study/               # Due cards, sessions, reviews, and SM-2 domain
     ├── stats/               # Weekly stats, achievements repository
+    ├── notifications/       # Smart reminder algorithm and local scheduling
     ├── settings/            # Preferences, reminders, settings repository
+    ├── onboarding/          # First-launch preference flow
     └── shell/               # Bottom navigation shell
 ```
 

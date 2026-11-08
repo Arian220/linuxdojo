@@ -35,14 +35,14 @@ class StudySessionNotifier extends AsyncNotifier<StudySessionState> {
   Future<StudySessionState> build() async {
     final repository = ref.watch(studyRepositoryProvider);
     final dueCards = await repository.getDueCards();
-    final sorted = dueCards.toList()..sort((a, b) => a.id.compareTo(b.id));
+    final random = ref.read(sessionRandomProvider);
+    final shuffled = dueCards.toList()..shuffle(random);
 
     final generator = ref.read(distractorGeneratorProvider);
-    final random = ref.read(sessionRandomProvider);
     final deckCards = <int, List<CardEntry>>{};
     final cards = <StudyCard>[];
 
-    for (final card in sorted) {
+    for (final card in shuffled) {
       if (card.type == CardType.multipleChoice) {
         final pool = deckCards[card.deckId] ??= await repository
             .getCardsForDeck(card.deckId);

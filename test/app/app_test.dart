@@ -4,14 +4,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:linuxdojo/app/app.dart';
 import 'package:linuxdojo/core/database/app_database.dart';
 import 'package:linuxdojo/core/database/database_provider.dart';
+import 'package:linuxdojo/features/settings/data/settings_repository.dart';
 
 import '../helpers/test_database.dart';
 
 void main() {
   late AppDatabase database;
 
-  setUp(() {
+  setUp(() async {
     database = createTestDatabase();
+    await SettingsRepository(database).setOnboardingComplete();
   });
 
   tearDown(() async {
@@ -27,6 +29,7 @@ void main() {
 
   testWidgets('starts on Home with the dark theme', (tester) async {
     await tester.pumpWidget(buildApp());
+    await tester.pumpAndSettle();
 
     final app = tester.widget<MaterialApp>(find.byType(MaterialApp));
     expect(app.themeMode, ThemeMode.dark);
@@ -44,6 +47,7 @@ void main() {
 
   testWidgets('bottom navigation switches tabs', (tester) async {
     await tester.pumpWidget(buildApp());
+    await tester.pumpAndSettle();
 
     await tester.tap(find.byIcon(Icons.layers_outlined));
     await tester.pumpAndSettle();

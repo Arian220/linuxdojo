@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:linuxdojo/core/database/app_database.dart';
@@ -32,6 +34,7 @@ void main() {
       overrides: [
         appDatabaseProvider.overrideWithValue(database),
         clockProvider.overrideWithValue(() => now),
+        sessionRandomProvider.overrideWithValue(Random(3)),
       ],
     );
     subscription = container.listen(studySessionProvider, (_, _) {});
@@ -57,13 +60,34 @@ void main() {
       expect(state.cards[0].card.type, CardType.flip);
       expect(state.cards[1].isMultipleChoice, isTrue);
       expect(state.cards[1].options, hasLength(4));
-      expect(state.cards[1].options, contains('ls'));
+      expect(state.cards[1].options, contains(state.cards[1].card.answer));
       expect(state.cards[1].options.toSet(), hasLength(4));
       expect(state.currentIndex, 0);
       expect(state.isRevealed, isFalse);
       expect(state.startedAt, now);
     },
   );
+
+  test('shuffles due cards instead of using database order', () async {
+    final state = await container.read(studySessionProvider.future);
+    final ids = state.cards.map((card) => card.card.id).toList();
+
+    expect(ids, isNot(orderedEquals([1, 2, 3, 4, 5, 6, 7, 8])));
+    expect(ids.toSet(), {1, 2, 3, 4, 5, 6, 7, 8});
+  });
+
+  test('uses a different card order when a session is restarted', () async {
+    final first = await container.read(studySessionProvider.future);
+    final firstIds = first.cards.map((card) => card.card.id).toList();
+
+    container.invalidate(studySessionProvider);
+
+    final second = await container.read(studySessionProvider.future);
+    final secondIds = second.cards.map((card) => card.card.id).toList();
+
+    expect(secondIds, isNot(orderedEquals(firstIds)));
+    expect(secondIds.toSet(), firstIds.toSet());
+  });
 
   test('reveals the current flip card', () async {
     await container.read(studySessionProvider.future);
@@ -94,18 +118,24 @@ void main() {
     notifier.reveal();
     await notifier.grade(ReviewGrade.good);
 
-    notifier.selectOption('ls');
+    final current = container.read(studySessionProvider).requireValue;
+    final correct = current.currentCard!.card.answer;
+    final wrong = current.currentCard!.options.firstWhere(
+      (option) => option != correct,
+    );
+
+    notifier.selectOption(correct);
 
     final state = container.read(studySessionProvider).requireValue;
-    expect(state.selectedOption, 'ls');
+    expect(state.selectedOption, correct);
     expect(state.isAnswered, isTrue);
     expect(state.isCorrect, isTrue);
 
-    notifier.selectOption('cd');
+    notifier.selectOption(wrong);
 
     expect(
       container.read(studySessionProvider).requireValue.selectedOption,
-      'ls',
+      correct,
     );
   });
 
@@ -115,7 +145,20 @@ void main() {
     notifier.reveal();
     await notifier.grade(ReviewGrade.good);
 
-    notifier.selectOption('ls');
+    final cardId = container
+        .read(studySessionProvider)
+        .requireValue
+        .currentCard!
+        .card
+        .id;
+    notifier.selectOption(
+      container
+          .read(studySessionProvider)
+          .requireValue
+          .currentCard!
+          .card
+          .answer,
+    );
     await notifier.continueAfterMultipleChoice();
 
     final state = container.read(studySessionProvider).requireValue;
@@ -124,7 +167,7 @@ void main() {
     expect(state.correctCount, 2);
     expect(state.isAnswered, isFalse);
 
-    final review = await ReviewRepository(database).getState(2);
+    final review = await ReviewRepository(database).getState(cardId);
     expect(review, isNotNull);
     expect(review!.repetitions, 1);
     expect(review.interval, 1);
@@ -151,7 +194,7 @@ void main() {
     expect(state.reviewedCount, 2);
     expect(state.correctCount, 1);
 
-    final review = await ReviewRepository(database).getState(2);
+    final review = await ReviewRepository(database).getState(mcCard.card.id);
     expect(review, isNotNull);
     expect(review!.repetitions, 0);
     expect(review.interval, 1);

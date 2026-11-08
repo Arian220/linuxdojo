@@ -6,6 +6,7 @@ import 'package:linuxdojo/core/database/database_provider.dart';
 import 'package:linuxdojo/core/database/seed/database_seeder.dart';
 import 'package:linuxdojo/core/theme/app_theme.dart';
 import 'package:linuxdojo/features/home/presentation/home_screen.dart';
+import 'package:linuxdojo/features/study/presentation/study_screen.dart';
 
 import '../../../helpers/fake_seed_source.dart';
 import '../../../helpers/sample_seed_data.dart';
@@ -40,7 +41,7 @@ void main() {
     await tester.tap(find.widgetWithText(FilledButton, 'Study'));
     await tester.pumpAndSettle();
 
-    expect(find.text('What does `pwd` do?'), findsOneWidget);
+    expect(find.byType(StudyScreen), findsOneWidget);
 
     await tester.pumpWidget(const SizedBox());
     await tester.pump();

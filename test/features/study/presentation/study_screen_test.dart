@@ -7,6 +7,8 @@ import 'package:linuxdojo/core/database/seed/database_seeder.dart';
 import 'package:linuxdojo/core/theme/app_theme.dart';
 import 'package:linuxdojo/features/study/presentation/study_screen.dart';
 import 'package:linuxdojo/features/study/presentation/study_session_provider.dart';
+import 'package:linuxdojo/features/study/presentation/widgets/flip_card.dart';
+import 'package:linuxdojo/features/study/presentation/widgets/multiple_choice_card.dart';
 
 import '../../../helpers/fake_seed_source.dart';
 import '../../../helpers/sample_seed_data.dart';
@@ -25,9 +27,7 @@ void main() {
     await database.close();
   });
 
-  testWidgets('runs a mixed session with flip and multiple choice cards', (
-    tester,
-  ) async {
+  Future<void> pumpStudyScreen(WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(800, 1200));
     addTearDown(() => tester.binding.setSurfaceSize(null));
 
@@ -41,85 +41,71 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
+  }
 
-    expect(find.text('What does `pwd` do?'), findsOneWidget);
-    expect(find.text('Again'), findsNothing);
+  testWidgets('runs a mixed session with flip and multiple choice cards', (
+    tester,
+  ) async {
+    await pumpStudyScreen(tester);
 
-    await tester.tap(find.text('What does `pwd` do?'));
-    await tester.pumpAndSettle();
+    var sawFlip = false;
+    var sawMultipleChoice = false;
 
-    expect(find.text('Prints the current working directory.'), findsOneWidget);
-    expect(find.text('Again'), findsOneWidget);
-    expect(find.text('Hard'), findsOneWidget);
-    expect(find.text('Good'), findsOneWidget);
-    expect(find.text('Easy'), findsOneWidget);
+    for (var index = 0; index < 8; index++) {
+      final flipFinder = find.byType(FlipCard);
+      final multipleChoiceFinder = find.byType(MultipleChoiceCard);
 
-    await tester.tap(find.text('Good'));
-    await tester.pumpAndSettle();
+      if (flipFinder.evaluate().isNotEmpty) {
+        sawFlip = true;
+        final flip = tester.widget<FlipCard>(flipFinder);
 
-    expect(
-      find.text('Which command lists directory contents?'),
-      findsOneWidget,
-    );
-    expect(find.text('Again'), findsNothing);
+        expect(find.text(flip.card.prompt), findsOneWidget);
+        expect(find.text('Again'), findsNothing);
 
-    await tester.tap(find.text('ls'));
-    await tester.pumpAndSettle();
+        await tester.tap(find.text(flip.card.prompt));
+        await tester.pumpAndSettle();
 
-    expect(find.text('Correct'), findsOneWidget);
-    expect(find.text('Answer: ls'), findsOneWidget);
-    expect(find.text('ls -la'), findsOneWidget);
-    expect(find.text('Continue'), findsOneWidget);
+        expect(find.text(flip.card.answer), findsOneWidget);
+        expect(find.text(flip.card.example), findsOneWidget);
+        expect(find.text('Again'), findsOneWidget);
+        expect(find.text('Hard'), findsOneWidget);
+        expect(find.text('Good'), findsOneWidget);
+        expect(find.text('Easy'), findsOneWidget);
 
-    await tester.tap(find.text('Continue'));
-    await tester.pumpAndSettle();
+        await tester.tap(find.text('Good'));
+        await tester.pumpAndSettle();
+      } else {
+        expect(multipleChoiceFinder, findsOneWidget);
+        sawMultipleChoice = true;
+        final multipleChoice = tester.widget<MultipleChoiceCard>(
+          multipleChoiceFinder,
+        );
 
-    expect(find.text('What does `cd /tmp` do?'), findsOneWidget);
-    await tester.tap(find.text('What does `cd /tmp` do?'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Good'));
-    await tester.pumpAndSettle();
+        expect(find.text(multipleChoice.studyCard.card.prompt), findsOneWidget);
+        expect(multipleChoice.studyCard.options, hasLength(4));
+        expect(multipleChoice.studyCard.options.toSet(), hasLength(4));
 
-    expect(find.text('Which command creates a directory?'), findsOneWidget);
-    await tester.tap(find.text('mkdir'));
-    await tester.pumpAndSettle();
-    expect(find.text('Correct'), findsOneWidget);
-    expect(find.text('mkdir notes'), findsOneWidget);
-    await tester.tap(find.text('Continue'));
-    await tester.pumpAndSettle();
+        await tester.tap(find.text(multipleChoice.studyCard.card.answer));
+        await tester.pumpAndSettle();
 
-    expect(
-      find.text('Which command searches text for a pattern?'),
-      findsOneWidget,
-    );
-    await tester.tap(find.text('grep'));
-    await tester.pumpAndSettle();
-    expect(find.text('Correct'), findsOneWidget);
-    expect(find.text('grep -r TODO .'), findsOneWidget);
-    await tester.tap(find.text('Continue'));
-    await tester.pumpAndSettle();
+        expect(find.text('Correct'), findsOneWidget);
+        expect(
+          find.text('Answer: ${multipleChoice.studyCard.card.answer}'),
+          findsOneWidget,
+        );
+        expect(
+          find.text(multipleChoice.studyCard.card.example),
+          findsOneWidget,
+        );
+        expect(find.text('Continue'), findsOneWidget);
 
-    expect(find.text('What does `ls -l` do?'), findsOneWidget);
-    await tester.tap(find.text('What does `ls -l` do?'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Good'));
-    await tester.pumpAndSettle();
+        await tester.tap(find.text('Continue'));
+        await tester.pumpAndSettle();
+      }
+    }
 
-    expect(find.text('Which command creates an empty file?'), findsOneWidget);
-    await tester.tap(find.text('touch'));
-    await tester.pumpAndSettle();
-    expect(find.text('Correct'), findsOneWidget);
-    expect(find.text('touch notes.txt'), findsOneWidget);
-    await tester.tap(find.text('Continue'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('What does `chmod +x script.sh` do?'), findsOneWidget);
-    await tester.tap(find.text('What does `chmod +x script.sh` do?'));
-    await tester.pumpAndSettle();
-    expect(find.text('Adds execute permission to script.sh.'), findsOneWidget);
-    await tester.tap(find.text('Good'));
-    await tester.pumpAndSettle();
-
+    expect(sawFlip, isTrue);
+    expect(sawMultipleChoice, isTrue);
     expect(find.text('Session complete'), findsOneWidget);
     expect(find.text('Cards reviewed'), findsOneWidget);
     expect(find.text('Correct answers'), findsOneWidget);
@@ -135,44 +121,39 @@ void main() {
   testWidgets('shows feedback and the example for a wrong MC answer', (
     tester,
   ) async {
-    await tester.binding.setSurfaceSize(const Size(800, 1200));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await pumpStudyScreen(tester);
 
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          appDatabaseProvider.overrideWithValue(database),
-          clockProvider.overrideWithValue(() => DateTime(2026, 3, 1, 10)),
-        ],
-        child: MaterialApp(theme: AppTheme.dark, home: const StudyScreen()),
-      ),
-    );
-    await tester.pumpAndSettle();
+    for (var index = 0; index < 8; index++) {
+      final flipFinder = find.byType(FlipCard);
 
-    await tester.tap(find.text('What does `pwd` do?'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Good'));
-    await tester.pumpAndSettle();
+      if (flipFinder.evaluate().isNotEmpty) {
+        final flip = tester.widget<FlipCard>(flipFinder);
 
-    expect(
-      find.text('Which command lists directory contents?'),
-      findsOneWidget,
-    );
+        await tester.tap(find.text(flip.card.prompt));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Good'));
+        await tester.pumpAndSettle();
+        continue;
+      }
 
-    final wrongLabel = find
-        .byType(OutlinedButton)
-        .evaluate()
-        .map(
-          (element) => ((element.widget as OutlinedButton).child as Text).data,
-        )
-        .firstWhere((label) => label != 'ls');
+      final multipleChoice = tester.widget<MultipleChoiceCard>(
+        find.byType(MultipleChoiceCard),
+      );
+      final wrongLabel = multipleChoice.studyCard.options.firstWhere(
+        (option) => option != multipleChoice.studyCard.card.answer,
+      );
 
-    await tester.tap(find.widgetWithText(OutlinedButton, wrongLabel!));
-    await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(OutlinedButton, wrongLabel));
+      await tester.pumpAndSettle();
 
-    expect(find.text('Not quite'), findsOneWidget);
-    expect(find.text('Answer: ls'), findsOneWidget);
-    expect(find.text('ls -la'), findsOneWidget);
+      expect(find.text('Not quite'), findsOneWidget);
+      expect(
+        find.text('Answer: ${multipleChoice.studyCard.card.answer}'),
+        findsOneWidget,
+      );
+      expect(find.text(multipleChoice.studyCard.card.example), findsOneWidget);
+      break;
+    }
 
     await tester.pumpWidget(const SizedBox());
     await tester.pump();
