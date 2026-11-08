@@ -2,7 +2,7 @@
 
 > Learn Linux commands offline, one card at a time.
 
-[![CI](https://github.com/ari/linuxdojo/actions/workflows/ci.yml/badge.svg)](https://github.com/ari/linuxdojo/actions/workflows/ci.yml)
+[![CI](https://github.com/Arian220/linuxdojo/actions/workflows/ci.yml/badge.svg)](https://github.com/ari/linuxdojo/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-6fcf8e.svg)](LICENSE)
 [![Flutter 3.47.1](https://img.shields.io/badge/Flutter-3.47.1-5fc8cc?logo=flutter&logoColor=white)](https://flutter.dev)
 
